@@ -120,13 +120,13 @@ const PROJECTS: ProjectData[] = [
   }
 ];
 
-// --- PROJETS INTÉRIEURS (MIS À JOUR AVEC VOS PHOTOS) ---
+// --- PROJETS INTÉRIEURS ---
 const INTERIOR_PROJECTS: ProjectData[] = [
   {
     id: "INT-01",
     title: "SALON MINIMALISTE",
     year: "2024",
-    img: "/salon.jpg", // Votre fichier
+    img: "/salon.jpg",
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Jeu de lumière et mobilier sculptural.", en: "Light play and sculptural furniture.", ar: "تلاعب بالضوء وأثاث نحتي." }
   },
@@ -134,7 +134,7 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     id: "INT-02",
     title: "CUISINE",
     year: "2023",
-    img: "/cuisine.jpg", // Votre fichier
+    img: "/cuisine.jpg",
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Fonctionnalité et design intemporel.", en: "Functionality and timeless design.", ar: "وظيفية وتصميم خالد." }
   },
@@ -142,7 +142,7 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     id: "INT-03",
     title: "SALLE À MANGER",
     year: "2024",
-    img: "/salle à manger.jpg", // Votre fichier (avec espaces et accents)
+    img: "/salle à manger.jpg",
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Espace de convivialité épuré.", en: "Refined conviviality space.", ar: "مساحة ضيافة راقية." }
   },
@@ -150,7 +150,7 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     id: "INT-04",
     title: "CHAMBRE",
     year: "2023",
-    img: "/chambre.jpg", // Votre fichier
+    img: "/chambre.jpg", 
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Atmosphère apaisante et textures douces.", en: "Soothing atmosphere and soft textures.", ar: "جو مريح وملمس ناعم." }
   },
@@ -158,7 +158,7 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     id: "INT-05",
     title: "SALLE DE BAIN",
     year: "2023",
-    img: "/sdb.jpg", // Votre fichier
+    img: "/sdb.jpg", 
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Matérialité brute et élégance.", en: "Raw materiality and elegance.", ar: "مواد خام وأناقة." }
   },
@@ -166,7 +166,7 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     id: "INT-06",
     title: "ESPACE DE TRAVAIL",
     year: "2023",
-    img: "/Bureau.jpg", // Votre fichier (Attention Majuscule B)
+    img: "/Bureau.jpg", 
     category: { fr: "BUREAU", en: "Office", ar: "مكتب" },
     desc: { fr: "Bureau à domicile minimaliste.", en: "Minimalist home office.", ar: "مكتب منزلي بسيط." }
   }
@@ -578,7 +578,17 @@ const InteriorView = () => {
           {INTERIOR_PROJECTS.map((data, i) => (
              <article key={data.id} className="group">
                <Reveal delay={i * 100}>
-                 <ParallaxImage src={data.img} alt={data.title} height="h-[600px]" className="mb-8" />
+                 {/* FIX: Utilisation d'une balise <img> standard avec un ratio 16/9 
+                    pour afficher l'image en entier sans effet de zoom/crop excessif.
+                 */}
+                 <div className="overflow-hidden mb-8 aspect-[16/9] bg-neutral-900">
+                    <img 
+                      src={data.img} 
+                      alt={data.title} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                 </div>
+                 
                  <div className="flex justify-between items-baseline border-b border-neutral-800 pb-4 mb-4">
                     <h3 className="font-sans text-2xl font-bold uppercase">{data.title}</h3>
                     <span className="font-mono text-xs text-neutral-500">{data.year}</span>
@@ -807,6 +817,11 @@ const Footer = () => {
 const App = () => {
   const [lang, setLang] = useState<Language>('fr');
   const [view, setView] = useState<View>('home');
+
+  // FIX SCROLL: Remonter en haut de page à chaque changement de vue
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [view]);
 
   return (
     <LanguageContext.Provider value={{ lang, setLang }}>
