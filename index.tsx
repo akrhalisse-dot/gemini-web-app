@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, createContext, useContext, ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowRight, ArrowDown, Plus, MapPin, Mail, Phone, Instagram, Linkedin, Menu, X, ArrowLeft, Maximize2, Grid } from 'lucide-react';
+import { ArrowRight, ArrowDown, Plus, MapPin, Mail, Phone, Instagram, Linkedin, Menu, X, ArrowLeft } from 'lucide-react';
 
-// --- 1. TYPES & INTERFACES (Strict Typing) ---
+// --- 1. TYPES & INTERFACES ---
 
 type Language = 'fr' | 'en' | 'ar';
-type View = 'home' | 'interior' | 'project-detail';
+type View = 'home' | 'interior';
 
 interface LocalizedString {
   fr: string;
@@ -21,25 +21,9 @@ interface ProjectData {
   img: string;
   category: LocalizedString;
   desc: LocalizedString;
-  location?: string;
-  surface?: string;
-  gallery?: string[]; // For detail view
 }
 
-interface ServiceData {
-  title: string;
-  desc: string;
-}
-
-// --- 2. DATA CONSTANTS ---
-
-// Helper to generate gallery mock data from existing images
-const MOCK_GALLERY = [
-  "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2700&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1616594039964-40891a909d20?q=80&w=2700&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=2700&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=2700&auto=format&fit=crop"
-];
+// --- 2. DATA CONSTANTS (CONTENU DE L'INDEX 1 - À JOUR) ---
 
 const PROJECTS: ProjectData[] = [
   {
@@ -47,10 +31,7 @@ const PROJECTS: ProjectData[] = [
     title: "LOGEMENT COLLECTIF",
     concept: { fr: "Séquences Urbaines & Verticalité Habitée", en: "Urban Sequences & Inhabited Verticality", ar: "تلسلسل حضري وعمودية مأهولة" },
     year: "2023",
-    location: "Bordeaux, FR",
-    surface: "2400 m²",
-    img: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/Logement Collectif.jpg",
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { 
       fr: "Réponse sculpturale à la densité urbaine. Chaque appartement est pensé comme une villa suspendue, prolongée par de profonds espaces extérieurs.", 
@@ -63,10 +44,7 @@ const PROJECTS: ProjectData[] = [
     title: "MOSQUÉE & CENTRE CULTUEL",
     concept: { fr: "Lumière Sacrée & Abstraction Géométrique", en: "Sacred Light & Geometric Abstraction", ar: "نور مقدس وتجريد هندسي" },
     year: "2022",
-    location: "Lyon, FR",
-    surface: "1200 m²",
-    img: "https://images.unsplash.com/photo-1565035010268-a3816f98589a?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/Mosquée.jpg",
     category: { fr: "ÉQUIPEMENT PUBLIC", en: "Public Facility", ar: "مرفق عام" },
     desc: { 
       fr: "Une réinterprétation contemporaine de l'architecture sacrée. Conçu comme un monolithe de lumière, l'édifice s'ancre dans la ville avec une puissance silencieuse.", 
@@ -79,10 +57,7 @@ const PROJECTS: ProjectData[] = [
     title: "RÉSIDENCE MÉDITERRANÉENNE",
     concept: { fr: "Ancrage Tellurique & Matières Brutes", en: "Telluric Anchoring & Raw Materials", ar: "رسو أرضي ومواد خام" },
     year: "2023",
-    location: "Cassis, FR",
-    surface: "350 m²",
-    img: "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/Résidence méditéranée.jpg",
     category: { fr: "VILLA PRIVÉE", en: "Private Villa", ar: "فيلا خاصة" },
     desc: { 
       fr: "Architecture du néo-vernaculaire où le bâti semble émerger de la terre. La pierre sèche locale et le béton brut dialoguent avec la minéralité du site.", 
@@ -95,10 +70,7 @@ const PROJECTS: ProjectData[] = [
     title: "MAISON NÉO-TRADITIONNELLE",
     concept: { fr: "Comment habiter la tradition aujourd'hui ?", en: "Inhabiting tradition today", ar: "كيف نسكن التقاليد اليوم؟" },
     year: "2024",
-    location: "Aix-en-Provence, FR",
-    surface: "180 m²",
-    img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/Maison Néo-Traditionnelle.jpg",
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { 
       fr: "Hybridation des codes classiques avec une écriture épurée. Nous avons revisité la silhouette archétypale de la maison à toiture tuiles en purifiant ses lignes.", 
@@ -111,10 +83,7 @@ const PROJECTS: ProjectData[] = [
     title: "VILLA DESIGN",
     concept: { fr: "L'Éloge de l'Horizon", en: "In Praise of the Horizon", ar: "مدح الأفق" },
     year: "2023",
-    location: "Cannes, FR",
-    surface: "420 m²",
-    img: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/Villa design .jpg",
     category: { fr: "LUXE", en: "Luxury", ar: "فاخر" },
     desc: { 
       fr: "Une architecture de la transparence conçue pour abolir les frontières. Les baies vitrées toute hauteur transforment le salon en une vaste loggia ouverte sur la nature.", 
@@ -127,10 +96,7 @@ const PROJECTS: ProjectData[] = [
     title: "EXTENSION BOIS",
     concept: { fr: "Pavillon de Lumière & Transparence", en: "Pavilion of Light & Transparency", ar: "جناح النور والشفافية" },
     year: "2024",
-    location: "Annecy, FR",
-    surface: "85 m²",
-    img: "https://images.unsplash.com/photo-1517581177697-002c81300852?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/Villa  Extension Bois.jpg",
     category: { fr: "EXTENSION", en: "Extension", ar: "توسعة" },
     desc: { 
       fr: "Pensée comme un pavillon habité, cette villa explore la légèreté. L'alliance du bois et du verre minimise l'empreinte visuelle pour laisser entrer le jardin.", 
@@ -143,10 +109,7 @@ const PROJECTS: ProjectData[] = [
     title: "VILLA FORESTIÈRE",
     concept: { fr: "Immersion Sylvestre & Mimétisme Matériel", en: "Forest Immersion & Material Mimicry", ar: "انغماس في الغابة ومحاكاة مادية" },
     year: "2023",
-    location: "Vosges, FR",
-    surface: "210 m²",
-    img: "https://images.unsplash.com/photo-1449844908441-8829872d2607?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY, 
+    img: "/Villa Forestière.jpg", 
     category: { fr: "VILLA PRIVÉE", en: "Private Villa", ar: "فيلا خاصة" },
     desc: { 
       fr: "Conçue comme un trait d'union entre l'homme et la forêt. Le bardage en bois patiné et les larges baies vitrées ancrent le bâti dans une temporalité lente.", 
@@ -156,79 +119,61 @@ const PROJECTS: ProjectData[] = [
   }
 ];
 
-// --- PROJETS INTÉRIEURS ---
+// --- PROJETS INTÉRIEURS (CONTENU DE L'INDEX 1 - À JOUR) ---
 const INTERIOR_PROJECTS: ProjectData[] = [
   {
     id: "INT-01",
-    title: "APPARTEMENT HAUSSMANN",
+    title: "SALON MINIMALISTE",
     year: "2024",
-    location: "Paris 16e",
-    surface: "145 m²",
-    img: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/salon.jpg",
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
-    desc: { fr: "Rénovation complète style minimaliste. Restauration des moulures et intégration de mobilier contemporain sur mesure.", en: "Complete minimalist renovation. Restoration of moldings and integration of bespoke contemporary furniture.", ar: "تجديد كامل بأسلوب بسيط." }
+    desc: { fr: "Jeu de lumière et mobilier sculptural.", en: "Light play and sculptural furniture.", ar: "تلاعب بالضوء وأثاث نحتي." }
   },
   {
     id: "INT-02",
-    title: "BOUTIQUE MONOCHROME",
+    title: "CUISINE",
     year: "2023",
-    location: "Milan, IT",
-    surface: "80 m²",
-    img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
-    category: { fr: "RETAIL", en: "Retail", ar: "بيع بالتجزئة" },
-    desc: { fr: "Concept store radical explorant les nuances de blanc et de texture. Un écrin pur pour des objets d'exception.", en: "Radical concept store exploring shades of white and texture. A pure setting for exceptional objects.", ar: "متجر بمفهوم أحادي اللون." }
+    img: "/cuisine.jpg",
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { fr: "Fonctionnalité et design intemporel.", en: "Functionality and timeless design.", ar: "وظيفية وتصميم خالد." }
   },
   {
     id: "INT-03",
-    title: "RÉSIDENCE CÔTIÈRE",
+    title: "SALLE À MANGER",
     year: "2024",
-    location: "Bandol, FR",
-    surface: "200 m²",
-    img: "https://images.unsplash.com/photo-1617806118233-18e1de247200?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/salle à manger.jpg",
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
-    desc: { fr: "Espace de convivialité épuré où la lumière naturelle sculpte les volumes intérieurs.", en: "Refined conviviality space where natural light sculpts interior volumes.", ar: "مساحة ضيافة راقية." }
+    desc: { fr: "Espace de convivialité épuré.", en: "Refined conviviality space.", ar: "مساحة ضيافة راقية." }
   },
   {
     id: "INT-04",
-    title: "SUITE HÔTELIÈRE",
+    title: "CHAMBRE",
     year: "2023",
-    location: "Marrakech, MA",
-    surface: "65 m²",
-    img: "https://images.unsplash.com/photo-1616594039964-40891a909d20?q=80&w=2700&auto=format&fit=crop", 
-    gallery: MOCK_GALLERY,
-    category: { fr: "HOSPITALITY", en: "Hospitality", ar: "ضيافة" },
-    desc: { fr: "Atmosphère apaisante, tadelakt et textures douces pour une expérience sensorielle unique.", en: "Soothing atmosphere, tadelakt and soft textures for a unique sensory experience.", ar: "جو مريح وملمس ناعم." }
+    img: "/chambre.jpg", 
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { fr: "Atmosphère apaisante et textures douces.", en: "Soothing atmosphere and soft textures.", ar: "جو مريح وملمس ناعم." }
   },
   {
     id: "INT-05",
-    title: "LOFT URBAIN",
+    title: "SALLE DE BAIN",
     year: "2023",
-    location: "Berlin, DE",
-    surface: "120 m²",
-    img: "https://images.unsplash.com/photo-1620626012053-1541e455005c?q=80&w=2700&auto=format&fit=crop", 
-    gallery: MOCK_GALLERY,
+    img: "/sdb.jpg", 
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
-    desc: { fr: "Matérialité brute (béton, acier) contrastée par des textiles chauds et une élégance intemporelle.", en: "Raw materiality (concrete, steel) contrasted by warm textiles and timeless elegance.", ar: "مواد خام وأناقة." }
+    desc: { fr: "Matérialité brute et élégance.", en: "Raw materiality and elegance.", ar: "مواد خام وأناقة." }
   },
   {
     id: "INT-06",
-    title: "BUREAU EXECUTIVE",
+    title: "ESPACE DE TRAVAIL",
     year: "2023",
-    location: "La Défense, FR",
-    surface: "350 m²",
-    img: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2700&auto=format&fit=crop", 
-    gallery: MOCK_GALLERY,
+    img: "/Bureau.jpg", 
     category: { fr: "BUREAU", en: "Office", ar: "مكتب" },
-    desc: { fr: "Espace de travail minimaliste favorisant la concentration et la sérénité. Lignes pures et acoustique maîtrisée.", en: "Minimalist workspace promoting concentration and serenity. Pure lines and controlled acoustics.", ar: "مكتب منزلي بسيط." }
+    desc: { fr: "Bureau à domicile minimaliste.", en: "Minimalist home office.", ar: "مكتب منزلي بسيط." }
   }
 ];
 
 const TRANSLATIONS = {
   fr: {
-    nav: { projects: "Projets", expertise: "Expertise", agency: "L'Agence", contact: "Contact", open_menu: "Menu", close_menu: "Fermer", back: "Retour", all_projects: "Tous les projets" },
+    nav: { projects: "Projets", expertise: "Expertise", agency: "L'Agence", contact: "Contact", open_menu: "Menu", close_menu: "Fermer", back: "Retour" },
     hero: { 
       est: "EST. 2016 — MARSEILLE, FR", 
       title_1: "Architecture", title_2: "& Design", title_3: "Global", 
@@ -255,42 +200,32 @@ const TRANSLATIONS = {
       stats: { exp: "Années d'expérience", projects: "Projets Livrés", engagement: "Engagement" } 
     },
     contact: { label: "Contact & Études", intro: "Que vous envisagiez une construction neuve ou une réhabilitation complexe, A1 Studio concrétise vos ambitions.", address_label: "Adresse", phone_label: "Téléphone", email_label: "Email", form: { name: "Nom / Entreprise", email: "Email", type: "Type de projet", message: "Message", cta: "Envoyer la demande", placeholders: { name: "Entrez votre nom", email: "votre@email.com", message: "Décrivez votre projet..." }, options: ["Construction Neuve", "Rénovation / Réhabilitation", "Extension", "Autre"] } },
-    footer: { legal: "Mentions Légales", privacy: "Politique de Confidentialité", sitemap: "Plan du site" },
-    detail: { client: "Client", year: "Année", surface: "Surface", location: "Lieu", next: "Projet Suivant" }
+    footer: { legal: "Mentions Légales", privacy: "Politique de Confidentialité", sitemap: "Plan du site" }
   },
   en: {
-    nav: { projects: "Projects", expertise: "Expertise", agency: "Agency", contact: "Contact", open_menu: "Menu", close_menu: "Close", back: "Back", all_projects: "All Projects" },
+    nav: { projects: "Projects", expertise: "Expertise", agency: "Agency", contact: "Contact", open_menu: "Menu", close_menu: "Close", back: "Back" },
     hero: { est: "EST. 2016 — MARSEILLE, FR", title_1: "Architecture", title_2: "& Global", title_3: "Design", desc: "Strategic Vision | Advanced Design | Execution. A1 Studio operates at the crossroads of technical exigency and spatial emotion.", status_label: "APPROACH", status_val: "SENSITIVE RATIONALITY", focus_label: "FOCUS", focus_val: "RESIDENTIAL / PUBLIC / URBAN", cta: "Start a project" },
     portfolio: { label: "Selected Projects", view_project: "VIEW PROJECT", view_all: "View full portfolio", view_interior: "Interior Design Portfolio" },
     interior: { label: "Interior Design", desc: "An exploration of material, light, and detail on an intimate scale." },
     expertise: { label: "Our Process", intro: "From Vision to Reality. We don't just deliver plans, but sustainable spatial solutions.", services: [{ title: "Analysis & Strategy", desc: "On-site immersion, program decoding, and definition of budgetary issues." }, { title: "Design & Identity", desc: "Volumetric research and architectural style. We sculpt space and validate materials." }, { title: "Technical Definition", desc: "Execution details, structural choices, and drafting of specifications." }, { title: "Construction Management", desc: "Rigorous management of contractors and financial control until key handover." }] },
     agency: { label: "The Architect", role: "AKRAM HALISSE — FOUNDER", quote: "Architecture shapes the value of your heritage.", desc_1: "Architect of matter and light, Akram Halisse envisions building as a balance between typological innovation and vernacular wisdom.", desc_2: "His signature is distinguished by radical elegance, prioritizing enduring materials (stone, concrete, wood) that age nobly.", stats: { exp: "Years of Experience", projects: "Delivered Projects", engagement: "Commitment" } },
     contact: { label: "Contact & Inquiries", intro: "Whether you plan a new construction or a complex rehabilitation, A1 Studio realizes your ambitions.", address_label: "Address", phone_label: "Phone", email_label: "Email", form: { name: "Name / Company", email: "Email", type: "Project Type", message: "Message", cta: "Send Request", placeholders: { name: "Enter your name", email: "your@email.com", message: "Describe your project..." }, options: ["New Construction", "Renovation / Rehab", "Extension", "Other"] } },
-    footer: { legal: "Legal Notice", privacy: "Privacy Policy", sitemap: "Sitemap" },
-    detail: { client: "Client", year: "Year", surface: "Area", location: "Location", next: "Next Project" }
+    footer: { legal: "Legal Notice", privacy: "Privacy Policy", sitemap: "Sitemap" }
   },
   ar: {
-    nav: { projects: "المشاريع", expertise: "الخبرة", agency: "الوكالة", contact: "اتصل بنا", open_menu: "قائمة", close_menu: "إغلاق", back: "رجوع", all_projects: "جميع المشاريع" },
+    nav: { projects: "المشاريع", expertise: "الخبرة", agency: "الوكالة", contact: "اتصل بنا", open_menu: "قائمة", close_menu: "إغلاق", back: "رجوع" },
     hero: { est: "تأسست 2016 - مارسيليا، فرنسا", title_1: "الهندسة", title_2: "والتصميم", title_3: "الشامل", desc: "رؤية استراتيجية | تصميم متقدم | تنفيذ. يعمل استوديو A1 عند تقاطع الصرامة التقنية والعاطفة المكانية.", status_label: "النهج", status_val: "عقلانية حساسة", focus_label: "التخصص", focus_val: "سكني / عام / حضري", cta: "ابدأ مشروعاً" },
     portfolio: { label: "مختارات من المشاريع", view_project: "عرض المشروع", view_all: "عرض المحفظة الكاملة", view_interior: "تصميم داخلي" },
     interior: { label: "التصميم الداخلي", desc: "استكشاف للمادة والضوء والتفاصيل على نطاق حميم." },
     expertise: { label: "عمليتنا", intro: "من الرؤية إلى الواقع. نحن لا نقدم مخططات فحسب، بل حلولاً مكانية مستدامة.", services: [{ title: "التحليل والاستراتيجية", desc: "الانغماس في الموقع، وفك رموز البرنامج وتحديد القضايا المالية." }, { title: "التصميم والهوية", desc: "البحث الحجمي والكتابة المعمارية. ننحت الفضاء ونتحقق من المواد." }, { title: "التعريف التقني", desc: "تفاصيل التنفيذ، الخيارات الهيكلية وصياغة المواصفات." }, { title: "إدارة التنفيذ", desc: "إدارة صارمة للمقاولين والرقابة المالية حتى تسليم المفتاح." }] },
     agency: { label: "المهندس المعماري", role: "أكرم حليس - المؤسس", quote: "العمارة تشكل قيمة تراثك.", desc_1: "مهندس المادة والضوء، يرى أكرم حليس البناء كبحث عن التوازن بين الابتكار النموذجي والحكمة المحلية.", desc_2: "تتميز بصمته بأناقة جذرية، مع إعطاء الأولوية للمواد الدائمة (الحجر، الخرسانة، الخشب) التي تعتق بنبل.", stats: { exp: "سنوات من الخبرة", projects: "مشاريع تم تسليمها", engagement: "التزام" } },
     contact: { label: "اتصل بنا", intro: "سواء كنت تفكر في بناء جديد أو إعادة تأهيل معقدة، يحقق A1 Studio طموحاتك.", address_label: "العنوان", phone_label: "الهاتف", email_label: "البريد الإلكتروني", form: { name: "الاسم / الشركة", email: "البريد الإلكتروني", type: "نوع المشروع", message: "الرسالة", cta: "إرسال الطلب", placeholders: { name: "أدخل اسمك", email: "your@email.com", message: "صف مشروعك..." }, options: ["بناء جديد", "تجديد / إعادة تأهيل", "توسعة", "أخرى"] } },
-    footer: { legal: "إشعارات قانونية", privacy: "سياسة الخصوصية", sitemap: "خريطة الموقع" },
-    detail: { client: "عميل", year: "سنة", surface: "مساحة", location: "موقع", next: "المشروع التالي" }
+    footer: { legal: "إشعارات قانونية", privacy: "سياسة الخصوصية", sitemap: "خريطة الموقع" }
   }
 };
 
-interface ViewContextType {
-  view: View;
-  setView: (v: View) => void;
-  currentProject: ProjectData | null;
-  setCurrentProject: (p: ProjectData | null) => void;
-}
-
 const LanguageContext = createContext<{ lang: Language; setLang: (l: Language) => void }>({ lang: 'fr', setLang: () => {} });
-const ViewContext = createContext<ViewContextType>({ view: 'home', setView: () => {}, currentProject: null, setCurrentProject: () => {} });
+const ViewContext = createContext<{ view: View; setView: (v: View) => void }>({ view: 'home', setView: () => {} });
 
 // --- 3. CUSTOM HOOKS ---
 
@@ -434,7 +369,7 @@ const Navbar = () => {
     <>
       <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 border-b ${scrolled ? 'bg-black/90 backdrop-blur-md border-neutral-900 h-20' : 'bg-transparent border-transparent h-24'} flex justify-between items-center px-6 md:px-12`}>
         <div className="flex items-center gap-4 z-50">
-          {view === 'interior' || view === 'project-detail' ? (
+          {view === 'interior' ? (
              <button onClick={() => setView('home')} className="flex items-center gap-2 group text-white hover:text-neutral-400 transition-colors">
                <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                <span className="font-mono text-xs uppercase">{t.back}</span>
@@ -511,7 +446,6 @@ const Navbar = () => {
   );
 };
 
-// ... Hero component remains same ...
 const Hero = () => {
   const { lang } = useContext(LanguageContext);
   const t = TRANSLATIONS[lang].hero;
@@ -520,7 +454,7 @@ const Hero = () => {
     <section className="relative min-h-screen flex flex-col justify-end px-6 md:px-12 border-b border-neutral-900 overflow-hidden pb-16 pt-32">
       <div className="absolute inset-0 z-0">
          <img 
-          src="https://images.unsplash.com/photo-1449844908441-8829872d2607?q=80&w=2700&auto=format&fit=crop"
+          src="/Villa Forestière.jpg"
           alt="Architecture Background"
           className="w-full h-full object-cover opacity-60 grayscale animate-pulse-slow" 
         />
@@ -575,13 +509,8 @@ const Hero = () => {
 
 const Portfolio = () => {
   const { lang } = useContext(LanguageContext);
-  const { setView, setCurrentProject } = useContext(ViewContext);
+  const { setView } = useContext(ViewContext);
   const t = TRANSLATIONS[lang].portfolio;
-
-  const handleOpenProject = (project: ProjectData) => {
-    setCurrentProject(project);
-    setView('project-detail');
-  };
 
   return (
     <section id="portfolio" className="relative z-10 px-6 md:px-12 py-32 border-b border-neutral-900 bg-black" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
@@ -591,8 +520,8 @@ const Portfolio = () => {
           {PROJECTS.map((data, i) => (
             <article key={data.id} className={`group ${i % 2 === 1 ? 'md:mt-32' : ''}`}>
               <Reveal delay={i * 100}>
-                {/* Clickable Image Triggering Detail View */}
-                <div onClick={() => handleOpenProject(data)} className="cursor-pointer overflow-hidden mb-6 rounded-sm aspect-[4/3] bg-neutral-900 group-hover:shadow-lg transition-all duration-500">
+                {/* Image FIX for Portfolio: Standard aspect ratio instead of parallax zoom */}
+                <div className="overflow-hidden mb-6 rounded-sm aspect-[4/3] bg-neutral-900 group-hover:shadow-lg transition-all duration-500">
                     <img 
                       src={data.img} 
                       alt={data.title} 
@@ -604,7 +533,7 @@ const Portfolio = () => {
                   <div className="flex gap-4">
                     <span className="font-mono text-xs text-neutral-500">{data.id}</span>
                     <div>
-                      <h3 onClick={() => handleOpenProject(data)} className="cursor-pointer font-sans text-2xl font-bold uppercase mb-2 group-hover:text-neutral-400 transition-colors">{data.title}</h3>
+                      <h3 className="font-sans text-2xl font-bold uppercase mb-2 group-hover:text-neutral-400 transition-colors">{data.title}</h3>
                       {data.concept && <p className="font-sans text-sm text-white mb-2 italic opacity-80">{data.concept[lang]}</p>}
                       <p className="font-mono text-xs text-neutral-500 uppercase">{data.category[lang]} — <time>{data.year}</time></p>
                     </div>
@@ -614,8 +543,7 @@ const Portfolio = () => {
                 
                 <div className="flex justify-between items-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-4 group-hover:translate-y-0 ease-out">
                    <p className="font-sans text-sm text-neutral-400 max-w-xs">{data.desc[lang]}</p>
-                   {/* Corrected Click Handler */}
-                   <span onClick={() => handleOpenProject(data)} className="font-mono text-xs underline cursor-pointer uppercase text-white hover:text-neutral-400">{t.view_project}</span>
+                   <span className="font-mono text-xs underline cursor-pointer uppercase text-white hover:text-neutral-400">{t.view_project}</span>
                 </div>
               </Reveal>
             </article>
@@ -636,161 +564,44 @@ const Portfolio = () => {
   );
 };
 
-// --- NEW COMPONENT: PROJECT DETAIL VIEW ---
-const ProjectDetail = () => {
-  const { lang } = useContext(LanguageContext);
-  const { currentProject, setView } = useContext(ViewContext);
-  const t = TRANSLATIONS[lang];
-
-  if (!currentProject) return null;
-
-  return (
-    <div className="animate-in fade-in duration-700 bg-black min-h-screen">
-      {/* Immersive Hero */}
-      <section className="relative h-screen w-full overflow-hidden">
-        <ParallaxImage src={currentProject.img} alt={currentProject.title} className="absolute inset-0 w-full h-full object-cover" height="h-full" />
-        <div className="absolute inset-0 bg-black/40"></div>
-        <div className="absolute bottom-0 left-0 p-6 md:p-12 w-full">
-           <Reveal>
-             <div className="border-t border-white/30 pt-8 flex flex-col md:flex-row justify-between items-end gap-8">
-               <div>
-                 <span className="font-mono text-xs text-white uppercase tracking-widest mb-2 block">{currentProject.category[lang]}</span>
-                 <h1 className="font-sans text-5xl md:text-8xl font-bold uppercase text-white leading-none">{currentProject.title}</h1>
-               </div>
-               <div className="font-mono text-xs text-white flex gap-8 uppercase">
-                 <div><span className="opacity-50 block mb-1">{t.detail.year}</span>{currentProject.year}</div>
-                 <div><span className="opacity-50 block mb-1">{t.detail.location}</span>{currentProject.location || "Marseille, FR"}</div>
-                 <div><span className="opacity-50 block mb-1">{t.detail.surface}</span>{currentProject.surface || "250 m²"}</div>
-               </div>
-             </div>
-           </Reveal>
-        </div>
-      </section>
-
-      {/* Editorial Content */}
-      <section className="px-6 md:px-12 py-32 max-w-[1920px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-           <div className="lg:col-span-4 space-y-12">
-              <Reveal>
-                <h3 className="font-mono text-xs uppercase text-neutral-500 border-b border-neutral-800 pb-2 mb-4">Concept</h3>
-                <p className="font-sans text-xl text-white leading-relaxed italic">{currentProject.concept ? currentProject.concept[lang] : "Exploration spatiale."}</p>
-              </Reveal>
-              <Reveal delay={200}>
-                <h3 className="font-mono text-xs uppercase text-neutral-500 border-b border-neutral-800 pb-2 mb-4">Description</h3>
-                <p className="font-sans text-neutral-400 leading-relaxed text-justify">{currentProject.desc[lang]} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-              </Reveal>
-           </div>
-           
-           <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-              {currentProject.gallery && currentProject.gallery.map((src, i) => (
-                <React.Fragment key={i}>
-                  <Reveal delay={i * 100} className={i === 0 ? "md:col-span-2" : ""}>
-                     <img src={src} alt="Detail" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
-                  </Reveal>
-                </React.Fragment>
-              ))}
-           </div>
-        </div>
-      </section>
-
-      {/* Navigation Footer */}
-      <section className="border-t border-neutral-900 py-24 px-6 md:px-12 flex justify-center">
-         <Button onClick={() => setView('home')}>{t.nav.back}</Button>
-      </section>
-    </div>
-  );
-};
-
-// --- REFACTORED INTERIOR VIEW ---
 const InteriorView = () => {
   const { lang } = useContext(LanguageContext);
-  const { setView, setCurrentProject } = useContext(ViewContext);
   const t = TRANSLATIONS[lang];
 
-  const handleOpenProject = (project: ProjectData) => {
-    setCurrentProject(project);
-    setView('project-detail');
-  };
-
   return (
-    <div className="animate-in fade-in duration-700 bg-black min-h-screen">
-      {/* Cinematic Full-Height Header */}
-      <section className="relative min-h-[80vh] flex flex-col justify-end px-6 md:px-12 border-b border-neutral-900 overflow-hidden pb-16 pt-32">
-         <div className="absolute inset-0 z-0">
-             <img 
-              src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2700&auto=format&fit=crop"
-              alt="Interior Hero"
-              className="w-full h-full object-cover opacity-50 grayscale" 
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
-         </div>
-         
-         <div className="relative z-10 max-w-7xl">
+    <div className="animate-in fade-in duration-700">
+      <section className="relative h-[60vh] flex flex-col justify-center items-center px-6 border-b border-neutral-900">
+         <ParallaxImage src="/salon.jpg" alt="Interior Hero" className="absolute inset-0 w-full h-full opacity-40 grayscale" height="h-full" />
+         <div className="relative z-10 text-center max-w-2xl mx-auto">
            <Reveal>
-             <span className="font-mono text-xs text-neutral-400 uppercase tracking-widest mb-4 block flex items-center gap-2">
-                <span className="w-8 h-px bg-white"></span>
-                {t.portfolio.view_interior}
-             </span>
-             <h1 className="font-sans text-6xl md:text-9xl font-bold uppercase mb-8 tracking-tighter text-white leading-[0.9]">
-               {t.interior.label.split(' ').map((word, i) => <span key={i} className="block">{word}</span>)}
-             </h1>
-             <p className="font-sans text-xl text-neutral-300 max-w-xl leading-relaxed border-l border-neutral-800 pl-8">{t.interior.desc}</p>
+            <span className="font-mono text-xs text-neutral-400 uppercase tracking-widest mb-4 block">{t.portfolio.view_interior}</span>
+            <h1 className="font-sans text-5xl md:text-7xl font-bold uppercase mb-8">{t.interior.label}</h1>
+            <p className="font-sans text-xl text-neutral-300">{t.interior.desc}</p>
            </Reveal>
          </div>
       </section>
 
-      {/* Editorial List Layout */}
-      <section className="px-6 md:px-12 py-32 bg-neutral-950">
-        <div className="max-w-[1920px] mx-auto">
+      <section className="px-6 md:px-12 py-32 bg-black min-h-screen">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {INTERIOR_PROJECTS.map((data, i) => (
-             <article key={data.id} className="group relative">
+             <article key={data.id} className="group">
                <Reveal delay={i * 100}>
-                 <div className={`flex flex-col ${i % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 lg:gap-32 items-center py-24 border-t border-neutral-900`}>
-                    
-                    {/* Image Section (60%) */}
-                    <div onClick={() => handleOpenProject(data)} className="lg:w-[60%] w-full cursor-pointer overflow-hidden relative">
-                       <div className="relative overflow-hidden aspect-[16/9]">
-                          <img 
-                            src={data.img} 
-                            alt={data.title} 
-                            className="w-full h-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-105 grayscale group-hover:grayscale-0"
-                          />
-                          <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
-                       </div>
-                    </div>
-
-                    {/* Text Section (40%) */}
-                    <div className="lg:w-[40%] w-full flex flex-col justify-center">
-                       <div className="flex items-center gap-4 mb-8">
-                          <span className="font-mono text-xs text-neutral-500">0{i+1}</span>
-                          <span className="h-px w-12 bg-neutral-800"></span>
-                          <span className="font-mono text-xs text-white uppercase tracking-widest">{data.category[lang]}</span>
-                       </div>
-                       
-                       <h2 onClick={() => handleOpenProject(data)} className="font-sans text-4xl md:text-6xl font-bold uppercase mb-8 cursor-pointer text-neutral-300 group-hover:text-white transition-colors leading-tight">
-                         {data.title}
-                       </h2>
-                       
-                       {/* Mini Specs Grid */}
-                       <div className="grid grid-cols-2 gap-y-4 gap-x-8 mb-8 border-l border-neutral-900 pl-6">
-                          <div>
-                            <span className="block font-mono text-[10px] text-neutral-600 uppercase mb-1">Year</span>
-                            <span className="font-sans text-sm text-white">{data.year}</span>
-                          </div>
-                          <div>
-                            <span className="block font-mono text-[10px] text-neutral-600 uppercase mb-1">Location</span>
-                            <span className="font-sans text-sm text-white">{data.location || "France"}</span>
-                          </div>
-                          <div className="col-span-2">
-                             <p className="font-sans text-neutral-500 leading-relaxed line-clamp-2">{data.desc[lang]}</p>
-                          </div>
-                       </div>
-
-                       <button onClick={() => handleOpenProject(data)} className="self-start inline-flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-white hover:text-neutral-400 transition-colors group/btn">
-                         {t.portfolio.view_project} 
-                         <ArrowRight size={14} className="group-hover/btn:translate-x-2 transition-transform duration-300" />
-                       </button>
-                    </div>
+                 {/* Image FIX for Interior: 16/9 aspect ratio standard img */}
+                 <div className="overflow-hidden mb-8 aspect-[16/9] bg-neutral-900">
+                    <img 
+                      src={data.img} 
+                      alt={data.title} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                 </div>
+                 
+                 <div className="flex justify-between items-baseline border-b border-neutral-800 pb-4 mb-4">
+                    <h3 className="font-sans text-2xl font-bold uppercase">{data.title}</h3>
+                    <span className="font-mono text-xs text-neutral-500">{data.year}</span>
+                 </div>
+                 <div className="flex justify-between text-sm text-neutral-400">
+                   <span>{data.category[lang]}</span>
+                   <span>{data.desc[lang]}</span>
                  </div>
                </Reveal>
              </article>
@@ -800,8 +611,6 @@ const InteriorView = () => {
     </div>
   );
 };
-
-// ... Expertise, Agency, Contact, Footer, App ...
 
 const Expertise = () => {
   const { lang } = useContext(LanguageContext);
@@ -816,7 +625,7 @@ const Expertise = () => {
             <p className="font-sans text-lg text-neutral-400 leading-relaxed mb-12 border-l border-neutral-800 pl-6 rtl:border-l-0 rtl:border-r rtl:pr-6">{t.intro}</p>
           </Reveal>
           <Reveal delay={300}>
-            <ParallaxImage src="https://images.unsplash.com/photo-1486718448742-163732cd1544?q=80&w=2600&auto=format&fit=crop" alt="Structural Expertise" height="h-[500px]" />
+            <ParallaxImage src="/Villa  Extension Bois.jpg" alt="Technical Expertise" height="h-[500px]" />
           </Reveal>
         </div>
         <div className="hidden lg:block w-px h-[600px] bg-neutral-800 mt-20 self-end"></div>
@@ -883,7 +692,7 @@ const Agency = () => {
            <div className="hidden lg:block w-px h-[800px] bg-neutral-800 self-end"></div>
            <div className="relative flex-1 lg:max-w-lg w-full">
              <Reveal delay={600}>
-               <ParallaxImage src="https://images.unsplash.com/photo-1618077360395-f3068be8e001?q=80&w=2580&auto=format&fit=crop" alt="Akram Halisse" height="h-[700px]" className="z-10" />
+               <ParallaxImage src="/Architecte.jpg" alt="Akram Halisse" height="h-[700px]" className="z-10" />
                <div className="absolute bottom-0 left-0 rtl:left-auto rtl:right-0 bg-black p-6 border-t border-r rtl:border-r-0 rtl:border-l border-neutral-800 z-20">
                  <p className="font-mono text-sm text-white mb-1">AKRAM HALISSE</p>
                  <p className="font-mono text-[10px] text-neutral-500 uppercase">{t.role}</p>
@@ -1014,7 +823,6 @@ const Footer = () => {
 const App = () => {
   const [lang, setLang] = useState<Language>('fr');
   const [view, setView] = useState<View>('home');
-  const [currentProject, setCurrentProject] = useState<ProjectData | null>(null);
 
   // FIX SCROLL: Remonter en haut de page à chaque changement de vue
   useEffect(() => {
@@ -1023,7 +831,7 @@ const App = () => {
 
   return (
     <LanguageContext.Provider value={{ lang, setLang }}>
-      <ViewContext.Provider value={{ view, setView, currentProject, setCurrentProject }}>
+      <ViewContext.Provider value={{ view, setView }}>
         <div className="bg-black min-h-screen text-neutral-200 selection:bg-white selection:text-black font-sans w-full scroll-smooth">
           <Navbar />
           <main>
@@ -1035,8 +843,6 @@ const App = () => {
                 <Agency />
                 <Contact />
               </>
-            ) : view === 'project-detail' ? (
-              <ProjectDetail />
             ) : (
               <>
                 <InteriorView />
