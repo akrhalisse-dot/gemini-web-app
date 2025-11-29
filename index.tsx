@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, createContext, useContext, ReactNod
 import { createRoot } from 'react-dom/client';
 import { ArrowRight, ArrowDown, Plus, MapPin, Mail, Phone, Instagram, Linkedin, Menu, X, ArrowLeft } from 'lucide-react';
 
-// --- 1. TYPES & INTERFACES (Strict Typing) ---
+// --- 1. TYPES & INTERFACES ---
 
 type Language = 'fr' | 'en' | 'ar';
 type View = 'home' | 'interior';
@@ -16,20 +16,16 @@ interface LocalizedString {
 interface ProjectData {
   id: string;
   title: string;
-  concept?: LocalizedString; // Ajout du concept (sous-titre)
+  concept?: LocalizedString;
   year: string;
   img: string;
   category: LocalizedString;
   desc: LocalizedString;
 }
 
-interface ServiceData {
-  title: string;
-  desc: string;
-}
+// --- 2. DATA CONSTANTS ---
 
-// --- 2. DATA CONSTANTS (VOS VRAIS PROJETS) ---
-
+// PROJETS ARCHITECTURE (EXTÉRIEUR)
 const PROJECTS: ProjectData[] = [
   {
     id: "01",
@@ -124,55 +120,55 @@ const PROJECTS: ProjectData[] = [
   }
 ];
 
-// PROJETS INTÉRIEURS (Basés sur la Page 8 du PDF)
+// --- PROJETS INTÉRIEURS (MIS À JOUR AVEC VOS PHOTOS) ---
 const INTERIOR_PROJECTS: ProjectData[] = [
   {
     id: "INT-01",
+    title: "SALON MINIMALISTE",
+    year: "2024",
+    img: "/salon.jpg", // Votre fichier
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { fr: "Jeu de lumière et mobilier sculptural.", en: "Light play and sculptural furniture.", ar: "تلاعب بالضوء وأثاث نحتي." }
+  },
+  {
+    id: "INT-02",
+    title: "CUISINE",
+    year: "2023",
+    img: "/cuisine.jpg", // Votre fichier
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { fr: "Fonctionnalité et design intemporel.", en: "Functionality and timeless design.", ar: "وظيفية وتصميم خالد." }
+  },
+  {
+    id: "INT-03",
     title: "SALLE À MANGER",
     year: "2024",
-    img: "/Interieur_SalleManger.jpg", // Image à uploader
+    img: "/salle à manger.jpg", // Votre fichier (avec espaces et accents)
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Espace de convivialité épuré.", en: "Refined conviviality space.", ar: "مساحة ضيافة راقية." }
   },
   {
-    id: "INT-02",
-    title: "ESPACE DE TRAVAIL",
-    year: "2023",
-    img: "/Interieur_Bureau.jpg", // Image à uploader
-    category: { fr: "BUREAU", en: "Office", ar: "مكتب" },
-    desc: { fr: "Bureau à domicile minimaliste.", en: "Minimalist home office.", ar: "مكتب منزلي بسيط." }
-  },
-  {
-    id: "INT-03",
+    id: "INT-04",
     title: "CHAMBRE",
     year: "2023",
-    img: "/Interieur_Chambre.jpg", // Image à uploader
+    img: "/chambre.jpg", // Votre fichier
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Atmosphère apaisante et textures douces.", en: "Soothing atmosphere and soft textures.", ar: "جو مريح وملمس ناعم." }
-  },
-  {
-    id: "INT-04",
-    title: "SALON MINIMALISTE",
-    year: "2024",
-    img: "/Interieur_Salon.jpg", // Image à uploader
-    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
-    desc: { fr: "Jeu de lumière et mobilier sculptural.", en: "Light play and sculptural furniture.", ar: "تلاعب بالضوء وأثاث نحتي." }
   },
   {
     id: "INT-05",
     title: "SALLE DE BAIN",
     year: "2023",
-    img: "/Interieur_Sdb.jpg", // Image à uploader
+    img: "/sdb.jpg", // Votre fichier
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Matérialité brute et élégance.", en: "Raw materiality and elegance.", ar: "مواد خام وأناقة." }
   },
   {
     id: "INT-06",
-    title: "CUISINE",
+    title: "ESPACE DE TRAVAIL",
     year: "2023",
-    img: "/Interieur_Cuisine.jpg", // Image à uploader
-    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
-    desc: { fr: "Fonctionnalité et design intemporel.", en: "Functionality and timeless design.", ar: "وظيفية وتصميم خالد." }
+    img: "/Bureau.jpg", // Votre fichier (Attention Majuscule B)
+    category: { fr: "BUREAU", en: "Office", ar: "مكتب" },
+    desc: { fr: "Bureau à domicile minimaliste.", en: "Minimalist home office.", ar: "مكتب منزلي بسيط." }
   }
 ];
 
@@ -234,7 +230,6 @@ const ViewContext = createContext<{ view: View; setView: (v: View) => void }>({ 
 
 // --- 3. CUSTOM HOOKS ---
 
-// Optimized scroll hook with simple state for parallax
 const useScroll = () => {
   const [scrollY, setScrollY] = useState(0);
   useEffect(() => {
@@ -254,7 +249,6 @@ const useScroll = () => {
   return scrollY;
 };
 
-// Intersection Observer for Reveal animations
 const useReveal = (threshold = 0.1) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -319,7 +313,6 @@ const ParallaxImage = ({ src, alt, speed = 0.05, className, height = "h-96" }: {
     const elementCenter = top + height / 2;
     const viewportCenter = windowHeight / 2;
     
-    // Calculate offset based on element position relative to viewport center
     if (top < windowHeight && top + height > 0) {
       setOffset((elementCenter - viewportCenter) * speed * -1);
     }
@@ -460,7 +453,6 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex flex-col justify-end px-6 md:px-12 border-b border-neutral-900 overflow-hidden pb-16 pt-32">
-      {/* Background with slight parallax via simple fixed positioning technique */}
       <div className="absolute inset-0 z-0">
          <img 
           src="/Villa Forestière.jpg"
@@ -571,8 +563,7 @@ const InteriorView = () => {
   return (
     <div className="animate-in fade-in duration-700">
       <section className="relative h-[60vh] flex flex-col justify-center items-center px-6 border-b border-neutral-900">
-         {/* Note: Generic image for interior hero - you can change this */}
-         <ParallaxImage src="/Interieur_Salon.jpg" alt="Interior Hero" className="absolute inset-0 w-full h-full opacity-40 grayscale" height="h-full" />
+         <ParallaxImage src="/salon.jpg" alt="Interior Hero" className="absolute inset-0 w-full h-full opacity-40 grayscale" height="h-full" />
          <div className="relative z-10 text-center max-w-2xl mx-auto">
            <Reveal>
             <span className="font-mono text-xs text-neutral-400 uppercase tracking-widest mb-4 block">{t.portfolio.view_interior}</span>
@@ -685,7 +676,6 @@ const Agency = () => {
            <div className="hidden lg:block w-px h-[800px] bg-neutral-800 self-end"></div>
            <div className="relative flex-1 lg:max-w-lg w-full">
              <Reveal delay={600}>
-               {/* IMPORTANT: Image de l'architecte avec le bon nom de fichier */}
                <ParallaxImage src="/Architecte.jpg" alt="Akram Halisse" height="h-[700px]" className="z-10" />
                <div className="absolute bottom-0 left-0 rtl:left-auto rtl:right-0 bg-black p-6 border-t border-r rtl:border-r-0 rtl:border-l border-neutral-800 z-20">
                  <p className="font-mono text-sm text-white mb-1">AKRAM HALISSE</p>
