@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, createContext, useContext, ReactNod
 import { createRoot } from 'react-dom/client';
 import { ArrowRight, ArrowDown, Plus, MapPin, Mail, Phone, Instagram, Linkedin, Menu, X } from 'lucide-react';
 
-// --- 1. TYPES & INTERFACES (Strict Typing) ---
+// --- 1. TYPES & INTERFACES ---
 
 type Language = 'fr' | 'en' | 'ar';
 
@@ -15,80 +15,142 @@ interface LocalizedString {
 interface ProjectData {
   id: string;
   title: string;
+  concept: LocalizedString; // Nouveau champ pour le sous-titre conceptuel du PDF
   year: string;
   img: string;
   category: LocalizedString;
   desc: LocalizedString;
 }
 
-interface ServiceData {
-  title: string;
-  desc: string;
-}
-
-// --- 2. DATA CONSTANTS ---
+// --- 2. DATA CONSTANTS (TEXTES BASÉS SUR LE PDF) ---
 
 const PROJECTS: ProjectData[] = [
   {
     id: "01",
-    title: "RESIDENCE PANIER",
-    year: "2024",
-    img: "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2700&auto=format&fit=crop",
-    category: { fr: "RÉHABILITATION", en: "Rehabilitation", ar: "إعادة تأهيل" },
-    desc: { fr: "Restructuration lourde en secteur sauvegardé.", en: "Major restructuring in a protected sector.", ar: "إعادة هيكلة كبرى في قطاع محمي." }
+    title: "LOGEMENT COLLECTIF",
+    concept: { fr: "Séquences Urbaines & Verticalité Habitée", en: "Urban Sequences & Inhabited Verticality", ar: "تلسلسل حضري وعمودية مأهولة" },
+    year: "2023",
+    img: "/Logement Collectif.jpg",
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { 
+      fr: "Réponse sculpturale à la densité urbaine, ce projet refuse la monotonie du bloc traditionnel. Chaque appartement est pensé comme une villa suspendue, prolongée par de profonds espaces extérieurs.", 
+      en: "A sculptural response to urban density refusing traditional monotony. Each apartment is designed as a suspended villa with deep outdoor spaces.", 
+      ar: "استجابة نحتية للكثافة الحضرية ترفض رتابة الكتل التقليدية. تم تصميم كل شقة كفيلا معلقة مع مساحات خارجية عميقة." 
+    }
   },
   {
     id: "02",
-    title: "VILLA CALANQUES",
-    year: "2023",
-    img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2700&auto=format&fit=crop",
-    category: { fr: "CONSTRUCTION NEUVE", en: "New Construction", ar: "بناء جديد" },
-    desc: { fr: "Insertion bioclimatique en site classé.", en: "Bioclimatic insertion in a classified site.", ar: "إدراج مناخي حيوي في موقع مصنف." }
+    title: "MOSQUÉE & CENTRE CULTUEL",
+    concept: { fr: "Lumière Sacrée & Abstraction Géométrique", en: "Sacred Light & Geometric Abstraction", ar: "نور مقدس وتجريد هندسي" },
+    year: "2022",
+    img: "/Mosquée.jpg",
+    category: { fr: "ÉQUIPEMENT PUBLIC", en: "Public Facility", ar: "مرفق عام" },
+    desc: { 
+      fr: "Une réinterprétation contemporaine de l'architecture sacrée. Conçu comme un monolithe de lumière, l'édifice s'ancre dans la ville avec une puissance silencieuse, filtrant le soleil via une résille paramétrique.", 
+      en: "A contemporary reinterpretation of sacred architecture. Designed as a monolith of light, the building anchors itself in the city with silent power.", 
+      ar: "إعادة تفسير معاصرة للعمارة المقدسة. صمم المبنى ككتلة من النور، يرسخ نفسه في المدينة بقوة صامتة." 
+    }
   },
   {
     id: "03",
-    title: "CENTRE CULTUREL",
-    year: "2022",
-    img: "https://images.unsplash.com/photo-1565035010268-a3816f98589a?q=80&w=2700&auto=format&fit=crop",
-    category: { fr: "EQUIPEMENT PUBLIC", en: "Public Facility", ar: "مرفق عام" },
-    desc: { fr: "Conception d'un espace polyvalent urbain.", en: "Design of an urban multipurpose space.", ar: "تصميم مساحة حضرية متعدد الأغراض." }
+    title: "RÉSIDENCE MÉDITERRANÉENNE",
+    concept: { fr: "Ancrage Tellurique & Matières Brutes", en: "Telluric Anchoring & Raw Materials", ar: "رسو أرضي ومواد خام" },
+    year: "2023",
+    img: "/Résidence méditéranée.jpg",
+    category: { fr: "VILLA PRIVÉE", en: "Private Villa", ar: "فيلا خاصة" },
+    desc: { 
+      fr: "Architecture du néo-vernaculaire où le bâti semble émerger de la terre. La pierre sèche locale et le béton brut dialoguent avec la minéralité du site pour créer un refuge intemporel.", 
+      en: "Neo-vernacular architecture where the building seems to emerge from the earth. Local dry stone and raw concrete dialogue with the site's minerality.", 
+      ar: "عمارة محلية جديدة يبدو فيها البناء وكأنه ينبثق من الأرض. الحجر المحلي والخرسانة الخام يتحاوران مع طبيعة الموقع." 
+    }
   },
   {
     id: "04",
-    title: "LOFT INDUSTRIEL",
+    title: "MAISON NÉO-TRADITIONNELLE",
+    concept: { fr: "Comment habiter la tradition aujourd'hui ?", en: "Inhabiting tradition today", ar: "كيف نسكن التقاليد اليوم؟" },
+    year: "2024",
+    img: "/Maison Néo-Traditionnelle.jpg",
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { 
+      fr: "Hybridation des codes classiques avec une écriture épurée. Nous avons revisité la silhouette archétypale de la maison à toiture tuiles en purifiant ses lignes et en cadrant le paysage.", 
+      en: "Hybridizing classic codes with a clean style. We revisited the archetypal silhouette of the tiled-roof house by purifying its lines and framing the landscape.", 
+      ar: "تهجين الرموز الكلاسيكية بأسلوب مبسط. قمنا بإعادة صياغة الصورة النمطية للمنزل ذو السقف القرميدي بتنقية خطوطه." 
+    }
+  },
+  {
+    id: "05",
+    title: "VILLA DESIGN",
+    concept: { fr: "L'Éloge de l'Horizon", en: "In Praise of the Horizon", ar: "مدح الأفق" },
     year: "2023",
-    img: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2700&auto=format&fit=crop",
-    category: { fr: "AMÉNAGEMENT INTÉRIEUR", en: "Interior Design", ar: "تصميم داخلي" },
-    desc: { fr: "Transformation d'un ancien atelier de mécanique.", en: "Transformation of an old mechanical workshop.", ar: "تحويل ورشة ميكانيكية قديمة." }
+    img: "/Villa design .jpg",
+    category: { fr: "LUXE", en: "Luxury", ar: "فاخر" },
+    desc: { 
+      fr: "Une architecture de la transparence conçue pour abolir les frontières. Les baies vitrées toute hauteur transforment le salon en une vaste loggia ouverte sur la nature.", 
+      en: "Architecture of transparency designed to abolish boundaries. Full-height windows transform the living room into a vast loggia open to nature.", 
+      ar: "عمارة الشفافية المصممة لإلغاء الحدود. النوافذ الممتدة من الأرض للسقف تحول الصالون إلى شرفة واسعة مفتوحة على الطبيعة." 
+    }
+  },
+  {
+    id: "06",
+    title: "EXTENSION BOIS",
+    concept: { fr: "Pavillon de Lumière & Transparence", en: "Pavilion of Light & Transparency", ar: "جناح النور والشفافية" },
+    year: "2024",
+    img: "/Villa  Extension Bois.jpg",
+    category: { fr: "EXTENSION", en: "Extension", ar: "توسعة" },
+    desc: { 
+      fr: "Pensée comme un pavillon habité, cette villa explore la légèreté. L'alliance du bois et du verre minimise l'empreinte visuelle pour laisser entrer le jardin.", 
+      en: "Conceived as an inhabited pavilion exploring lightness. The alliance of wood and glass minimizes the visual footprint to let the garden in.", 
+      ar: "صممت كجناح مسكون يستكشف الخفة. تحالف الخشب والزجاج يقلل من البصمة البصرية ليسمح للحديقة بالدخول." 
+    }
   }
 ];
 
 const TRANSLATIONS = {
   fr: {
     nav: { projects: "Projets", expertise: "Expertise", agency: "L'Agence", contact: "Contact", open_menu: "Menu", close_menu: "Fermer" },
-    hero: { est: "EST. 2016 — MARSEILLE, FR", title_1: "Architecture", title_2: "& Maîtrise", title_3: "d'Œuvre", desc: "Conception, Réhabilitation et Construction. Une approche qui lie rigueur technique et sensibilité architecturale pour des lieux de vie pérennes.", status_label: "STATUT", status_val: "DISPONIBLE", focus_label: "EXPERTISE", focus_val: "RÉSIDENTIEL / PUBLIC / URBAIN", cta: "Démarrer un projet" },
-    portfolio: { label: "Sélection de Projets", view_project: "VOIR LE PROJET", view_all: "Voir tout le portfolio" },
-    expertise: { label: "Nos Domaines", intro: "Nous refusons l'effet de mode pour nous concentrer sur l'essentiel : la structure, l'espace et la lumière.", services: [{ title: "Études de Faisabilité", desc: "Analyse réglementaire, technique et financière. Diagnostics initiaux pour valider le potentiel constructible." }, { title: "Conception & PC", desc: "Élaboration des plans (ESQ, APD, PRO) et gestion complète des dossiers administratifs." }, { title: "Maîtrise d'Œuvre (DET)", desc: "Direction de l'exécution des travaux. Coordination des entreprises et contrôle qualité rigoureux." }, { title: "BIM & Synthèse", desc: "Modélisation 3D avancée pour une gestion technique centralisée et une anticipation des conflits." }] },
-    agency: { label: "L'Architecte", role: "ARCHITECTE — FONDATEUR", quote: "Construire, c'est collaborer avec la terre : c'est mettre une marque humaine sur un paysage qui en sera modifié à jamais.", desc_1: "Basée à Marseille, l'agence intervient sur l'ensemble du territoire PACA. Notre approche se distingue par une écriture sobre et intemporelle, privilégiant les matériaux bruts et durables (béton, pierre, bois).", desc_2: "Nous ne construisons pas seulement des murs, nous bâtissons des lieux de vie pérennes, respectueux des normes mondiales et harmonieux dans leurs volumes.", stats: { exp: "Années d'expérience", projects: "Projets Livrés", engagement: "Engagement" } },
-    contact: { label: "Contact & Études", intro: "Que vous envisagiez une construction neuve, une extension ou une réhabilitation complexe, l'agence A1 Studio est à votre écoute.", address_label: "Adresse", phone_label: "Téléphone", email_label: "Email", form: { name: "Nom / Entreprise", email: "Email", type: "Type de projet", message: "Message", cta: "Envoyer la demande", placeholders: { name: "Entrez votre nom", email: "votre@email.com", message: "Décrivez votre projet..." }, options: ["Construction Neuve", "Rénovation / Réhabilitation", "Extension", "Autre"] } },
+    hero: { 
+      est: "EST. 2016 — MARSEILLE, FR", 
+      title_1: "Architecture", title_2: "& Design", title_3: "Global", 
+      desc: "Vision Stratégique | Conception Avancée | Exécution. A1 Studio opère à la croisée de l'exigence technique et de l'émotion spatiale.", 
+      status_label: "APPROCHE", status_val: "RATIONALITÉ SENSIBLE", focus_label: "EXPERTISE", focus_val: "RÉSIDENTIEL / PUBLIC / URBAIN", cta: "Démarrer un projet" 
+    },
+    portfolio: { label: "Sélection de Projets", view_project: "DÉCOUVRIR", view_all: "Voir tout le portfolio" },
+    expertise: { 
+      label: "Notre Processus", 
+      intro: "De la Vision à la Réalité. Nous ne livrons pas seulement des plans, mais des solutions spatiales durables.", 
+      services: [
+        { title: "Analyse & Stratégie", desc: "Immersion sur site, décryptage du programme et définition des enjeux budgétaires." }, 
+        { title: "Conception & Identité", desc: "Recherche volumétrique et écriture architecturale. Nous sculptons l'espace et validons les matérialités." }, 
+        { title: "Définition Technique", desc: "Détails d'exécution, choix structurels et rédaction des descriptifs (CCTP)." }, 
+        { title: "Direction de l'Exécution", desc: "Pilotage rigoureux des entreprises et contrôle financier jusqu'à la remise des clés." }
+      ] 
+    },
+    agency: { 
+      label: "L'Architecte", role: "AKRAM HALISSE — FONDATEUR", 
+      quote: "L'architecture façonne la valeur de votre patrimoine.", 
+      desc_1: "Architecte de la matière et de la lumière, Akram Halisse envisage l'acte de bâtir comme une recherche d'équilibre entre innovation typologique et sagesse vernaculaire.", 
+      desc_2: "Sa signature se distingue par une élégance radicale, privilégiant les matériaux pérennes (pierre, béton, bois) qui vieillissent noblement.", 
+      stats: { exp: "Années d'expérience", projects: "Projets Livrés", engagement: "Engagement" } 
+    },
+    contact: { label: "Contact & Études", intro: "Que vous envisagiez une construction neuve ou une réhabilitation complexe, A1 Studio concrétise vos ambitions.", address_label: "Adresse", phone_label: "Téléphone", email_label: "Email", form: { name: "Nom / Entreprise", email: "Email", type: "Type de projet", message: "Message", cta: "Envoyer la demande", placeholders: { name: "Entrez votre nom", email: "votre@email.com", message: "Décrivez votre projet..." }, options: ["Construction Neuve", "Rénovation / Réhabilitation", "Extension", "Autre"] } },
     footer: { legal: "Mentions Légales", privacy: "Politique de Confidentialité", sitemap: "Plan du site" }
   },
   en: {
     nav: { projects: "Projects", expertise: "Expertise", agency: "Agency", contact: "Contact", open_menu: "Menu", close_menu: "Close" },
-    hero: { est: "EST. 2016 — MARSEILLE, FR", title_1: "Architecture", title_2: "& Project", title_3: "Management", desc: "Design, Rehabilitation, and Construction. An approach linking technical rigor with architectural sensitivity for enduring living spaces.", status_label: "STATUS", status_val: "AVAILABLE", focus_label: "FOCUS", focus_val: "RESIDENTIAL / PUBLIC / URBAN", cta: "Start a project" },
-    portfolio: { label: "Selected Projects", view_project: "VIEW PROJECT", view_all: "View full portfolio" },
-    expertise: { label: "Our Expertise", intro: "We refuse trends to focus on the essential: structure, space, and light.", services: [{ title: "Feasibility Studies", desc: "Regulatory, technical, and financial analysis. Initial diagnostics to validate build potential." }, { title: "Design & Permits", desc: "Plan development (Schematic, Design Dev) and full administrative file management." }, { title: "Construction Supervision", desc: "Execution management. Coordination of contractors and rigorous quality control." }, { title: "BIM & Synthesis", desc: "Advanced 3D modeling for centralized technical management and conflict anticipation." }] },
-    agency: { label: "The Architect", role: "ARCHITECT — FOUNDER", quote: "To build is to collaborate with the earth: it is to put a human mark on a landscape that will be changed forever.", desc_1: "Based in Marseille, the agency operates throughout the PACA region. Our approach is distinguished by a sober and timeless style, prioritizing raw and sustainable materials (concrete, stone, wood).", desc_2: "We do not just build walls, we build enduring living spaces, respectful of global standards and harmonious in their volumes.", stats: { exp: "Years of Experience", projects: "Delivered Projects", engagement: "Commitment" } },
-    contact: { label: "Contact & Inquiries", intro: "Whether you are considering a new construction, an extension, or a complex rehabilitation, A1 Studio is at your disposal.", address_label: "Address", phone_label: "Phone", email_label: "Email", form: { name: "Name / Company", email: "Email", type: "Project Type", message: "Message", cta: "Send Request", placeholders: { name: "Enter your name", email: "your@email.com", message: "Describe your project..." }, options: ["New Construction", "Renovation / Rehab", "Extension", "Other"] } },
+    hero: { est: "EST. 2016 — MARSEILLE, FR", title_1: "Architecture", title_2: "& Global", title_3: "Design", desc: "Strategic Vision | Advanced Design | Execution. A1 Studio operates at the crossroads of technical exigency and spatial emotion.", status_label: "APPROACH", status_val: "SENSITIVE RATIONALITY", focus_label: "FOCUS", focus_val: "RESIDENTIAL / PUBLIC / URBAN", cta: "Start a project" },
+    portfolio: { label: "Selected Projects", view_project: "DISCOVER", view_all: "View full portfolio" },
+    expertise: { label: "Our Process", intro: "From Vision to Reality. We don't just deliver plans, but sustainable spatial solutions.", services: [{ title: "Analysis & Strategy", desc: "On-site immersion, program decoding, and definition of budgetary issues." }, { title: "Design & Identity", desc: "Volumetric research and architectural style. We sculpt space and validate materials." }, { title: "Technical Definition", desc: "Execution details, structural choices, and drafting of specifications." }, { title: "Construction Management", desc: "Rigorous management of contractors and financial control until key handover." }] },
+    agency: { label: "The Architect", role: "AKRAM HALISSE — FOUNDER", quote: "Architecture shapes the value of your heritage.", desc_1: "Architect of matter and light, Akram Halisse envisions building as a balance between typological innovation and vernacular wisdom.", desc_2: "His signature is distinguished by radical elegance, prioritizing enduring materials (stone, concrete, wood) that age nobly.", stats: { exp: "Years of Experience", projects: "Delivered Projects", engagement: "Commitment" } },
+    contact: { label: "Contact & Inquiries", intro: "Whether you plan a new construction or a complex rehabilitation, A1 Studio realizes your ambitions.", address_label: "Address", phone_label: "Phone", email_label: "Email", form: { name: "Name / Company", email: "Email", type: "Project Type", message: "Message", cta: "Send Request", placeholders: { name: "Enter your name", email: "your@email.com", message: "Describe your project..." }, options: ["New Construction", "Renovation / Rehab", "Extension", "Other"] } },
     footer: { legal: "Legal Notice", privacy: "Privacy Policy", sitemap: "Sitemap" }
   },
   ar: {
     nav: { projects: "المشاريع", expertise: "الخبرة", agency: "الوكالة", contact: "اتصل بنا", open_menu: "قائمة", close_menu: "إغلاق" },
-    hero: { est: "تأسست 2016 - مارسيليا، فرنسا", title_1: "الهندسة", title_2: "المعمارية", title_3: "وإدارة المشاريع", desc: "التصميم، إعادة التأهيل والبناء. نهج يربط الصرامة التقنية بالحساسية المعمارية لمساحات معيشية دائمة.", status_label: "الحالة", status_val: "متاح للمشاريع", focus_label: "التخصص", focus_val: "سكني / عام / حضري", cta: "ابدأ مشروعاً" },
-    portfolio: { label: "مختارات من المشاريع", view_project: "عرض المشروع", view_all: "عرض المحفظة الكاملة" },
-    expertise: { label: "مجالاتنا", intro: "نرفض الموضة العابرة لنركز على الجوهر: الهيكل، الفراغ والضوء.", services: [{ title: "دراسات الجدوى", desc: "تحليل تنظيمي، تقني ومالي. تشخيصات أولية للتحقق من إمكانية البناء." }, { title: "التصميم والتراخيص", desc: "إعداد المخططات (الأولية والتفصيلية) وإدارة الملفات الإدارية بالكامل." }, { title: "الإشراف على التنفيذ", desc: "إدارة تنفيذ الأعمال. تنسيق المقاولين ومراقبة الجودة بصرامة." }, { title: "نمذجة معلومات البناء BIM", desc: "نمذجة ثلاثية الأبعاد متقدمة للإدارة التقنية المركزية وتوقع التعارضات." }] },
-    agency: { label: "المهندس المعماري", role: "مهندس معماري - المؤسس", quote: "البناء هو التعاون مع الأرض: هو وضع بصمة إنسانية على مشهد سيتغير إلى الأبد.", desc_1: "يقع مقر الوكالة في مرسيليا، وتعمل في جميع أنحاء المنطقة. يتميز نهجنا بأسلوب رصين وخالد، مع إعطاء الأولوية للمواد الخام والمستدامة (الخرسانة، الحجر، الخشب).", desc_2: "نحن لا نبني جدرانًا فحسب، بل نبني أماكن معيشة دائمة، تحترم المعايير العالمية وتتناغم في أحجامها.", stats: { exp: "سنوات من الخبرة", projects: "مشاريع تم تسليمها", engagement: "التزام" } },
-    contact: { label: "اتصل بنا", intro: "سواء كنت تفكر في بناء جديد، أو توسعة، أو إعادة تأهيل معقدة، فإن وكالة A1 Studio في خدمتك.", address_label: "العنوان", phone_label: "الهاتف", email_label: "البريد الإلكتروني", form: { name: "الاسم / الشركة", email: "البريد الإلكتروني", type: "نوع المشروع", message: "الرسالة", cta: "إرسال الطلب", placeholders: { name: "أدخل اسمك", email: "your@email.com", message: "صف مشروعك..." }, options: ["بناء جديد", "تجديد / إعادة تأهيل", "توسعة", "أخرى"] } },
+    hero: { est: "تأسست 2016 - مارسيليا، فرنسا", title_1: "الهندسة", title_2: "والتصميم", title_3: "الشامل", desc: "رؤية استراتيجية | تصميم متقدم | تنفيذ. يعمل استوديو A1 عند تقاطع الصرامة التقنية والعاطفة المكانية.", status_label: "النهج", status_val: "عقلانية حساسة", focus_label: "التخصص", focus_val: "سكني / عام / حضري", cta: "ابدأ مشروعاً" },
+    portfolio: { label: "مختارات من المشاريع", view_project: "اكتشف", view_all: "عرض المحفظة الكاملة" },
+    expertise: { label: "عمليتنا", intro: "من الرؤية إلى الواقع. نحن لا نقدم مخططات فحسب، بل حلولاً مكانية مستدامة.", services: [{ title: "التحليل والاستراتيجية", desc: "الانغماس في الموقع، وفك رموز البرنامج وتحديد القضايا المالية." }, { title: "التصميم والهوية", desc: "البحث الحجمي والكتابة المعمارية. ننحت الفضاء ونتحقق من المواد." }, { title: "التعريف التقني", desc: "تفاصيل التنفيذ، الخيارات الهيكلية وصياغة المواصفات." }, { title: "إدارة التنفيذ", desc: "إدارة صارمة للمقاولين والرقابة المالية حتى تسليم المفتاح." }] },
+    agency: { label: "المهندس المعماري", role: "أكرم حليس - المؤسس", quote: "العمارة تشكل قيمة تراثك.", desc_1: "مهندس المادة والضوء، يرى أكرم حليس البناء كبحث عن التوازن بين الابتكار النموذجي والحكمة المحلية.", desc_2: "تتميز بصمته بأناقة جذرية، مع إعطاء الأولوية للمواد الدائمة (الحجر، الخرسانة، الخشب) التي تعتق بنبل.", stats: { exp: "سنوات من الخبرة", projects: "مشاريع تم تسليمها", engagement: "التزام" } },
+    contact: { label: "اتصل بنا", intro: "سواء كنت تفكر في بناء جديد أو إعادة تأهيل معقدة، يحقق A1 Studio طموحاتك.", address_label: "العنوان", phone_label: "الهاتف", email_label: "البريد الإلكتروني", form: { name: "الاسم / الشركة", email: "البريد الإلكتروني", type: "نوع المشروع", message: "الرسالة", cta: "إرسال الطلب", placeholders: { name: "أدخل اسمك", email: "your@email.com", message: "صف مشروعك..." }, options: ["بناء جديد", "تجديد / إعادة تأهيل", "توسعة", "أخرى"] } },
     footer: { legal: "إشعارات قانونية", privacy: "سياسة الخصوصية", sitemap: "خريطة الموقع" }
   }
 };
@@ -97,7 +159,6 @@ const LanguageContext = createContext<{ lang: Language; setLang: (l: Language) =
 
 // --- 3. CUSTOM HOOKS ---
 
-// Optimized scroll hook with simple state for parallax
 const useScroll = () => {
   const [scrollY, setScrollY] = useState(0);
   useEffect(() => {
@@ -117,7 +178,6 @@ const useScroll = () => {
   return scrollY;
 };
 
-// Intersection Observer for Reveal animations
 const useReveal = (threshold = 0.1) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -182,8 +242,6 @@ const ParallaxImage = ({ src, alt, speed = 0.05, className, height = "h-96" }: {
     const elementCenter = top + height / 2;
     const viewportCenter = windowHeight / 2;
     
-    // Calculate offset based on element position relative to viewport center
-    // Only update if element is roughly visible
     if (top < windowHeight && top + height > 0) {
       setOffset((elementCenter - viewportCenter) * speed * -1);
     }
@@ -314,12 +372,11 @@ const Hero = () => {
 
   return (
     <section className="relative min-h-screen flex flex-col justify-end px-6 md:px-12 border-b border-neutral-900 overflow-hidden pb-16 pt-32">
-      {/* Background with slight parallax via simple fixed positioning technique */}
       <div className="absolute inset-0 z-0">
          <img 
-          src="https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2700&auto=format&fit=crop"
+          src="/Villa Forestière.jpg"
           alt="Architecture Background"
-          className="w-full h-full object-cover opacity-40 grayscale animate-pulse-slow" 
+          className="w-full h-full object-cover opacity-60 grayscale animate-pulse-slow" 
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/90 to-black/40"></div>
       </div>
@@ -387,6 +444,7 @@ const Portfolio = () => {
                     <span className="font-mono text-xs text-neutral-500">{data.id}</span>
                     <div>
                       <h3 className="font-sans text-2xl font-bold uppercase mb-2 group-hover:text-neutral-400 transition-colors">{data.title}</h3>
+                      <p className="font-sans text-sm text-white mb-2 italic opacity-80">{data.concept[lang]}</p>
                       <p className="font-mono text-xs text-neutral-500 uppercase">{data.category[lang]} — <time>{data.year}</time></p>
                     </div>
                   </div>
@@ -424,7 +482,8 @@ const Expertise = () => {
             <p className="font-sans text-lg text-neutral-400 leading-relaxed mb-12 border-l border-neutral-800 pl-6 rtl:border-l-0 rtl:border-r rtl:pr-6">{t.intro}</p>
           </Reveal>
           <Reveal delay={300}>
-            <ParallaxImage src="https://images.unsplash.com/photo-1486718448742-163732cd1544?q=80&w=2600&auto=format&fit=crop" alt="Structural Expertise" height="h-[500px]" />
+            {/* Using the Villa Extension Bois image here or another detail image if preferred */}
+            <ParallaxImage src="/Villa  Extension Bois.jpg" alt="Technical Expertise" height="h-[500px]" />
           </Reveal>
         </div>
         <div className="hidden lg:block w-px h-[600px] bg-neutral-800 mt-20 self-end"></div>
@@ -491,7 +550,7 @@ const Agency = () => {
            <div className="hidden lg:block w-px h-[800px] bg-neutral-800 self-end"></div>
            <div className="relative flex-1 lg:max-w-lg w-full">
              <Reveal delay={600}>
-               <ParallaxImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2700&auto=format&fit=crop" alt="Akram Halisse" height="h-[700px]" className="z-10" />
+               <ParallaxImage src="/Architecte.jpg" alt="Akram Halisse" height="h-[700px]" className="z-10" />
                <div className="absolute bottom-0 left-0 rtl:left-auto rtl:right-0 bg-black p-6 border-t border-r rtl:border-r-0 rtl:border-l border-neutral-800 z-20">
                  <p className="font-mono text-sm text-white mb-1">AKRAM HALISSE</p>
                  <p className="font-mono text-[10px] text-neutral-500 uppercase">{t.role}</p>
