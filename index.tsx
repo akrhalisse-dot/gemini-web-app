@@ -521,6 +521,15 @@ const Portfolio = () => {
           {PROJECTS.map((data, i) => (
             <article key={data.id} className={`group ${i % 2 === 1 ? 'md:mt-32' : ''}`}>
               <Reveal delay={i * 100}>
+                {/* FIX: Remplacé ParallaxImage par une image standard pour le Portfolio principal aussi */}
+                <div className="overflow-hidden mb-6 rounded-sm aspect-[4/3] bg-neutral-900 group-hover:shadow-lg transition-all duration-500">
+                    <img 
+                      src={data.img} 
+                      alt={data.title} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                </div>
+
                 <div className="border-t border-neutral-800 pt-6 mb-8 flex justify-between items-start">
                   <div className="flex gap-4">
                     <span className="font-mono text-xs text-neutral-500">{data.id}</span>
@@ -532,7 +541,7 @@ const Portfolio = () => {
                   </div>
                   <Plus size={16} className="text-neutral-600 group-hover:rotate-90 transition-transform duration-300" />
                 </div>
-                <ParallaxImage src={data.img} alt={data.title} height="h-[400px] md:h-[500px]" className="mb-6 rounded-sm" />
+                
                 <div className="flex justify-between items-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-4 group-hover:translate-y-0 ease-out">
                    <p className="font-sans text-sm text-neutral-400 max-w-xs">{data.desc[lang]}</p>
                    <span className="font-mono text-xs underline cursor-pointer uppercase text-white hover:text-neutral-400">{t.view_project}</span>
@@ -578,9 +587,7 @@ const InteriorView = () => {
           {INTERIOR_PROJECTS.map((data, i) => (
              <article key={data.id} className="group">
                <Reveal delay={i * 100}>
-                 {/* FIX: Utilisation d'une balise <img> standard avec un ratio 16/9 
-                    pour afficher l'image en entier sans effet de zoom/crop excessif.
-                 */}
+                 {/* FIX: Balise image standard ratio 16/9 sans zoom excessif */}
                  <div className="overflow-hidden mb-8 aspect-[16/9] bg-neutral-900">
                     <img 
                       src={data.img} 
