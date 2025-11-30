@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect, useRef, createContext, useContext, ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ArrowRight, ArrowDown, Plus, MapPin, Mail, Phone, Instagram, Linkedin, Menu, X, ArrowLeft, Maximize2, Grid } from 'lucide-react';
 
-// --- 1. TYPES & INTERFACES (Strict Typing) ---
+// --- 1. TYPES & INTERFACES ---
 
 type Language = 'fr' | 'en' | 'ar';
 type View = 'home' | 'interior' | 'project-detail';
@@ -19,12 +18,12 @@ interface ProjectData {
   title: string;
   concept?: LocalizedString;
   year: string;
-  img: string;
+  img: string; // L'image principale
+  gallery?: string[]; // Pour la vue détail (nouvelle structure)
   category: LocalizedString;
   desc: LocalizedString;
   location?: string;
   surface?: string;
-  gallery?: string[]; // For detail view
 }
 
 interface ServiceData {
@@ -32,15 +31,7 @@ interface ServiceData {
   desc: string;
 }
 
-// --- 2. DATA CONSTANTS ---
-
-// Helper to generate gallery mock data from existing images
-const MOCK_GALLERY = [
-  "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2700&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1616594039964-40891a909d20?q=80&w=2700&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=2700&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=2700&auto=format&fit=crop"
-];
+// --- 2. DATA CONSTANTS (VOS VRAIES DONNÉES INTÉGRÉES DANS LA NOUVELLE STRUCTURE) ---
 
 const PROJECTS: ProjectData[] = [
   {
@@ -48,10 +39,11 @@ const PROJECTS: ProjectData[] = [
     title: "LOGEMENT COLLECTIF",
     concept: { fr: "Séquences Urbaines & Verticalité Habitée", en: "Urban Sequences & Inhabited Verticality", ar: "تلسلسل حضري وعمودية مأهولة" },
     year: "2023",
-    location: "Bordeaux, FR",
+    location: "Marseille, FR",
     surface: "2400 m²",
-    img: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/Logement Collectif.jpg",
+    // On utilise la même image pour la galerie car vous n'en avez qu'une par projet pour l'instant
+    gallery: ["/Logement Collectif.jpg", "/Logement Collectif.jpg"], 
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { 
       fr: "Réponse sculpturale à la densité urbaine. Chaque appartement est pensé comme une villa suspendue, prolongée par de profonds espaces extérieurs.", 
@@ -66,8 +58,8 @@ const PROJECTS: ProjectData[] = [
     year: "2022",
     location: "Lyon, FR",
     surface: "1200 m²",
-    img: "https://images.unsplash.com/photo-1565035010268-a3816f98589a?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/Mosquée.jpg",
+    gallery: ["/Mosquée.jpg", "/Mosquée1.jpg", "/Mosquée2.jpg"], // J'ai vu que vous aviez uploadé Mosquée1 et 2 aussi !
     category: { fr: "ÉQUIPEMENT PUBLIC", en: "Public Facility", ar: "مرفق عام" },
     desc: { 
       fr: "Une réinterprétation contemporaine de l'architecture sacrée. Conçu comme un monolithe de lumière, l'édifice s'ancre dans la ville avec une puissance silencieuse.", 
@@ -82,8 +74,8 @@ const PROJECTS: ProjectData[] = [
     year: "2023",
     location: "Cassis, FR",
     surface: "350 m²",
-    img: "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/Résidence méditéranée.jpg",
+    gallery: ["/Résidence méditéranée.jpg"],
     category: { fr: "VILLA PRIVÉE", en: "Private Villa", ar: "فيلا خاصة" },
     desc: { 
       fr: "Architecture du néo-vernaculaire où le bâti semble émerger de la terre. La pierre sèche locale et le béton brut dialoguent avec la minéralité du site.", 
@@ -98,8 +90,8 @@ const PROJECTS: ProjectData[] = [
     year: "2024",
     location: "Aix-en-Provence, FR",
     surface: "180 m²",
-    img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/Maison Néo-Traditionnelle.jpg",
+    gallery: ["/Maison Néo-Traditionnelle.jpg"],
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { 
       fr: "Hybridation des codes classiques avec une écriture épurée. Nous avons revisité la silhouette archétypale de la maison à toiture tuiles en purifiant ses lignes.", 
@@ -114,8 +106,8 @@ const PROJECTS: ProjectData[] = [
     year: "2023",
     location: "Cannes, FR",
     surface: "420 m²",
-    img: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/Villa design .jpg", // Attention à l'espace conservé
+    gallery: ["/Villa design .jpg"],
     category: { fr: "LUXE", en: "Luxury", ar: "فاخر" },
     desc: { 
       fr: "Une architecture de la transparence conçue pour abolir les frontières. Les baies vitrées toute hauteur transforment le salon en une vaste loggia ouverte sur la nature.", 
@@ -130,8 +122,8 @@ const PROJECTS: ProjectData[] = [
     year: "2024",
     location: "Annecy, FR",
     surface: "85 m²",
-    img: "https://images.unsplash.com/photo-1517581177697-002c81300852?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/Villa  Extension Bois.jpg", // Attention aux deux espaces conservés
+    gallery: ["/Villa  Extension Bois.jpg"],
     category: { fr: "EXTENSION", en: "Extension", ar: "توسعة" },
     desc: { 
       fr: "Pensée comme un pavillon habité, cette villa explore la légèreté. L'alliance du bois et du verre minimise l'empreinte visuelle pour laisser entrer le jardin.", 
@@ -146,8 +138,8 @@ const PROJECTS: ProjectData[] = [
     year: "2023",
     location: "Vosges, FR",
     surface: "210 m²",
-    img: "https://images.unsplash.com/photo-1449844908441-8829872d2607?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY, 
+    img: "/Villa Forestière.jpg", 
+    gallery: ["/Villa Forestière.jpg"],
     category: { fr: "VILLA PRIVÉE", en: "Private Villa", ar: "فيلا خاصة" },
     desc: { 
       fr: "Conçue comme un trait d'union entre l'homme et la forêt. Le bardage en bois patiné et les larges baies vitrées ancrent le bâti dans une temporalité lente.", 
@@ -157,73 +149,55 @@ const PROJECTS: ProjectData[] = [
   }
 ];
 
-// --- PROJETS INTÉRIEURS ---
+// --- PROJETS INTÉRIEURS (VOS IMAGES) ---
 const INTERIOR_PROJECTS: ProjectData[] = [
   {
     id: "INT-01",
-    title: "APPARTEMENT HAUSSMANN",
+    title: "SALON MINIMALISTE",
     year: "2024",
-    location: "Paris 16e",
-    surface: "145 m²",
-    img: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/salon.jpg",
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
-    desc: { fr: "Rénovation complète style minimaliste. Restauration des moulures et intégration de mobilier contemporain sur mesure.", en: "Complete minimalist renovation. Restoration of moldings and integration of bespoke contemporary furniture.", ar: "تجديد كامل بأسلوب بسيط." }
+    desc: { fr: "Jeu de lumière et mobilier sculptural.", en: "Light play and sculptural furniture.", ar: "تلاعب بالضوء وأثاث نحتي." }
   },
   {
     id: "INT-02",
-    title: "BOUTIQUE MONOCHROME",
+    title: "CUISINE",
     year: "2023",
-    location: "Milan, IT",
-    surface: "80 m²",
-    img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
-    category: { fr: "RETAIL", en: "Retail", ar: "بيع بالتجزئة" },
-    desc: { fr: "Concept store radical explorant les nuances de blanc et de texture. Un écrin pur pour des objets d'exception.", en: "Radical concept store exploring shades of white and texture. A pure setting for exceptional objects.", ar: "متجر بمفهوم أحادي اللون." }
+    img: "/cuisine.jpg",
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { fr: "Fonctionnalité et design intemporel.", en: "Functionality and timeless design.", ar: "وظيفية وتصميم خالد." }
   },
   {
     id: "INT-03",
-    title: "RÉSIDENCE CÔTIÈRE",
+    title: "SALLE À MANGER",
     year: "2024",
-    location: "Bandol, FR",
-    surface: "200 m²",
-    img: "https://images.unsplash.com/photo-1617806118233-18e1de247200?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/salle à manger.jpg",
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
-    desc: { fr: "Espace de convivialité épuré où la lumière naturelle sculpte les volumes intérieurs.", en: "Refined conviviality space where natural light sculpts interior volumes.", ar: "مساحة ضيافة راقية." }
+    desc: { fr: "Espace de convivialité épuré.", en: "Refined conviviality space.", ar: "مساحة ضيافة راقية." }
   },
   {
     id: "INT-04",
-    title: "SUITE HÔTELIÈRE",
+    title: "CHAMBRE",
     year: "2023",
-    location: "Marrakech, MA",
-    surface: "65 m²",
-    img: "https://images.unsplash.com/photo-1616594039964-40891a909d20?q=80&w=2700&auto=format&fit=crop", 
-    gallery: MOCK_GALLERY,
-    category: { fr: "HOSPITALITY", en: "Hospitality", ar: "ضيافة" },
-    desc: { fr: "Atmosphère apaisante, tadelakt et textures douces pour une expérience sensorielle unique.", en: "Soothing atmosphere, tadelakt and soft textures for a unique sensory experience.", ar: "جو مريح وملمس ناعم." }
+    img: "/chambre.jpg",
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { fr: "Atmosphère apaisante et textures douces.", en: "Soothing atmosphere and soft textures.", ar: "جو مريح وملمس ناعم." }
   },
   {
     id: "INT-05",
-    title: "LOFT URBAIN",
+    title: "SALLE DE BAIN",
     year: "2023",
-    location: "Berlin, DE",
-    surface: "120 m²",
-    img: "https://images.unsplash.com/photo-1620626012053-1541e455005c?q=80&w=2700&auto=format&fit=crop", 
-    gallery: MOCK_GALLERY,
+    img: "/sdb.jpg",
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
-    desc: { fr: "Matérialité brute (béton, acier) contrastée par des textiles chauds et une élégance intemporelle.", en: "Raw materiality (concrete, steel) contrasted by warm textiles and timeless elegance.", ar: "مواد خام وأناقة." }
+    desc: { fr: "Matérialité brute et élégance.", en: "Raw materiality and elegance.", ar: "مواد خام وأناقة." }
   },
   {
     id: "INT-06",
-    title: "BUREAU EXECUTIVE",
+    title: "ESPACE DE TRAVAIL",
     year: "2023",
-    location: "La Défense, FR",
-    surface: "350 m²",
-    img: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2700&auto=format&fit=crop", 
-    gallery: MOCK_GALLERY,
+    img: "/Bureau.jpg", // Avec majuscule B
     category: { fr: "BUREAU", en: "Office", ar: "مكتب" },
-    desc: { fr: "Espace de travail minimaliste favorisant la concentration et la sérénité. Lignes pures et acoustique maîtrisée.", en: "Minimalist workspace promoting concentration and serenity. Pure lines and controlled acoustics.", ar: "مكتب منزلي بسيط." }
+    desc: { fr: "Bureau à domicile minimaliste.", en: "Minimalist home office.", ar: "مكتب منزلي بسيط." }
   }
 ];
 
@@ -512,7 +486,7 @@ const Navbar = () => {
   );
 };
 
-// ... Hero component remains same ...
+// ... Hero component ...
 const Hero = () => {
   const { lang } = useContext(LanguageContext);
   const t = TRANSLATIONS[lang].hero;
@@ -521,7 +495,7 @@ const Hero = () => {
     <section className="relative min-h-screen flex flex-col justify-end px-6 md:px-12 border-b border-neutral-900 overflow-hidden pb-16 pt-32">
       <div className="absolute inset-0 z-0">
          <img 
-          src="https://images.unsplash.com/photo-1449844908441-8829872d2607?q=80&w=2700&auto=format&fit=crop"
+          src="/Villa Forestière.jpg"
           alt="Architecture Background"
           className="w-full h-full object-cover opacity-60 grayscale animate-pulse-slow" 
         />
@@ -660,8 +634,8 @@ const ProjectDetail = () => {
                </div>
                <div className="font-mono text-xs text-white flex gap-8 uppercase">
                  <div><span className="opacity-50 block mb-1">{t.detail.year}</span>{currentProject.year}</div>
-                 <div><span className="opacity-50 block mb-1">{t.detail.location}</span>{currentProject.location || "Marseille, FR"}</div>
-                 <div><span className="opacity-50 block mb-1">{t.detail.surface}</span>{currentProject.surface || "250 m²"}</div>
+                 <div><span className="opacity-50 block mb-1">{t.detail.location}</span>{currentProject.location || "France"}</div>
+                 <div><span className="opacity-50 block mb-1">{t.detail.surface}</span>{currentProject.surface || "N/A"}</div>
                </div>
              </div>
            </Reveal>
@@ -672,24 +646,24 @@ const ProjectDetail = () => {
       <section className="px-6 md:px-12 py-32 max-w-[1920px] mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
            <div className="lg:col-span-4 space-y-12">
-              <Reveal>
-                <h3 className="font-mono text-xs uppercase text-neutral-500 border-b border-neutral-800 pb-2 mb-4">Concept</h3>
-                <p className="font-sans text-xl text-white leading-relaxed italic">{currentProject.concept ? currentProject.concept[lang] : "Exploration spatiale."}</p>
-              </Reveal>
-              <Reveal delay={200}>
-                <h3 className="font-mono text-xs uppercase text-neutral-500 border-b border-neutral-800 pb-2 mb-4">Description</h3>
-                <p className="font-sans text-neutral-400 leading-relaxed text-justify">{currentProject.desc[lang]} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-              </Reveal>
+             <Reveal>
+               <h3 className="font-mono text-xs uppercase text-neutral-500 border-b border-neutral-800 pb-2 mb-4">Concept</h3>
+               <p className="font-sans text-xl text-white leading-relaxed italic">{currentProject.concept ? currentProject.concept[lang] : "Exploration spatiale."}</p>
+             </Reveal>
+             <Reveal delay={200}>
+               <h3 className="font-mono text-xs uppercase text-neutral-500 border-b border-neutral-800 pb-2 mb-4">Description</h3>
+               <p className="font-sans text-neutral-400 leading-relaxed text-justify">{currentProject.desc[lang]}</p>
+             </Reveal>
            </div>
            
            <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-              {currentProject.gallery && currentProject.gallery.map((src, i) => (
-                <React.Fragment key={i}>
-                  <Reveal delay={i * 100} className={i === 0 ? "md:col-span-2" : ""}>
+             {currentProject.gallery && currentProject.gallery.map((src, i) => (
+               <React.Fragment key={i}>
+                 <Reveal delay={i * 100} className={i === 0 ? "md:col-span-2" : ""}>
                      <img src={src} alt="Detail" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
-                  </Reveal>
-                </React.Fragment>
-              ))}
+                 </Reveal>
+               </React.Fragment>
+             ))}
            </div>
         </div>
       </section>
@@ -719,7 +693,7 @@ const InteriorView = () => {
       <section className="relative min-h-[80vh] flex flex-col justify-end px-6 md:px-12 border-b border-neutral-900 overflow-hidden pb-16 pt-32">
          <div className="absolute inset-0 z-0">
              <img 
-              src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2700&auto=format&fit=crop"
+              src="/salon.jpg"
               alt="Interior Hero"
               className="w-full h-full object-cover opacity-50 grayscale" 
             />
@@ -780,7 +754,7 @@ const InteriorView = () => {
                           </div>
                           <div>
                             <span className="block font-mono text-[10px] text-neutral-600 uppercase mb-1">Location</span>
-                            <span className="font-sans text-sm text-white">{data.location || "France"}</span>
+                            <span className="font-sans text-sm text-white">Marseille, FR</span>
                           </div>
                           <div className="col-span-2">
                              <p className="font-sans text-neutral-500 leading-relaxed line-clamp-2">{data.desc[lang]}</p>
@@ -802,8 +776,6 @@ const InteriorView = () => {
   );
 };
 
-// ... Expertise, Agency, Contact, Footer, App ...
-
 const Expertise = () => {
   const { lang } = useContext(LanguageContext);
   const t = TRANSLATIONS[lang].expertise;
@@ -817,7 +789,7 @@ const Expertise = () => {
             <p className="font-sans text-lg text-neutral-400 leading-relaxed mb-12 border-l border-neutral-800 pl-6 rtl:border-l-0 rtl:border-r rtl:pr-6">{t.intro}</p>
           </Reveal>
           <Reveal delay={300}>
-            <ParallaxImage src="https://images.unsplash.com/photo-1486718448742-163732cd1544?q=80&w=2600&auto=format&fit=crop" alt="Structural Expertise" height="h-[500px]" />
+            <ParallaxImage src="/Villa  Extension Bois.jpg" alt="Structural Expertise" height="h-[500px]" />
           </Reveal>
         </div>
         <div className="hidden lg:block w-px h-[600px] bg-neutral-800 mt-20 self-end"></div>
@@ -884,7 +856,7 @@ const Agency = () => {
            <div className="hidden lg:block w-px h-[800px] bg-neutral-800 self-end"></div>
            <div className="relative flex-1 lg:max-w-lg w-full">
              <Reveal delay={600}>
-               <ParallaxImage src="https://images.unsplash.com/photo-1618077360395-f3068be8e001?q=80&w=2580&auto=format&fit=crop" alt="Akram Halisse" height="h-[700px]" className="z-10" />
+               <ParallaxImage src="/Architecte.jpg" alt="Akram Halisse" height="h-[700px]" className="z-10" />
                <div className="absolute bottom-0 left-0 rtl:left-auto rtl:right-0 bg-black p-6 border-t border-r rtl:border-r-0 rtl:border-l border-neutral-800 z-20">
                  <p className="font-mono text-sm text-white mb-1">AKRAM HALISSE</p>
                  <p className="font-mono text-[10px] text-neutral-500 uppercase">{t.role}</p>
