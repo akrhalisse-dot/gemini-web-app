@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef, createContext, useContext, ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ArrowRight, ArrowDown, Plus, MapPin, Mail, Phone, Instagram, Linkedin, Menu, X, ArrowLeft, Maximize2, Grid } from 'lucide-react';
+import { ArrowRight, ArrowDown, Plus, MapPin, Mail, Phone, Instagram, Linkedin, Menu, X, ArrowLeft, Maximize2, Grid, Layers } from 'lucide-react';
 
 // --- 1. TYPES & INTERFACES (Strict Typing) ---
 
@@ -34,14 +34,7 @@ interface ServiceData {
 
 // --- 2. DATA CONSTANTS ---
 
-// Helper to generate gallery mock data from existing images
-const MOCK_GALLERY = [
-  "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2700&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1616594039964-40891a909d20?q=80&w=2700&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=2700&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=2700&auto=format&fit=crop"
-];
-
+// PROJETS ARCHITECTURE (EXTÉRIEUR)
 const PROJECTS: ProjectData[] = [
   {
     id: "01",
@@ -50,8 +43,8 @@ const PROJECTS: ProjectData[] = [
     year: "2023",
     location: "Bordeaux, FR",
     surface: "2400 m²",
-    img: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/images/projets/logement-collectif.jpg",
+    gallery: ["/images/projets/logement-collectif.jpg"],
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { 
       fr: "Réponse sculpturale à la densité urbaine. Chaque appartement est pensé comme une villa suspendue, prolongée par de profonds espaces extérieurs.", 
@@ -66,8 +59,12 @@ const PROJECTS: ProjectData[] = [
     year: "2022",
     location: "Lyon, FR",
     surface: "1200 m²",
-    img: "https://images.unsplash.com/photo-1565035010268-a3816f98589a?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/images/projets/mosquee-main-image.jpg",
+    gallery: [
+      "/images/projets/mosquee-main-image.jpg",
+      "/images/projets/Mosquee-details.jpg",
+      "/images/projets/mosquee-side.jpg"
+    ],
     category: { fr: "ÉQUIPEMENT PUBLIC", en: "Public Facility", ar: "مرفق عام" },
     desc: { 
       fr: "Une réinterprétation contemporaine de l'architecture sacrée. Conçu comme un monolithe de lumière, l'édifice s'ancre dans la ville avec une puissance silencieuse.", 
@@ -82,8 +79,8 @@ const PROJECTS: ProjectData[] = [
     year: "2023",
     location: "Cassis, FR",
     surface: "350 m²",
-    img: "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/images/projets/residence-med.jpg",
+    gallery: ["/images/projets/residence-med.jpg"],
     category: { fr: "VILLA PRIVÉE", en: "Private Villa", ar: "فيلا خاصة" },
     desc: { 
       fr: "Architecture du néo-vernaculaire où le bâti semble émerger de la terre. La pierre sèche locale et le béton brut dialoguent avec la minéralité du site.", 
@@ -93,29 +90,13 @@ const PROJECTS: ProjectData[] = [
   },
   {
     id: "04",
-    title: "MAISON NÉO-TRADITIONNELLE",
-    concept: { fr: "Comment habiter la tradition aujourd'hui ?", en: "Inhabiting tradition today", ar: "كيف نسكن التقاليد اليوم؟" },
-    year: "2024",
-    location: "Aix-en-Provence, FR",
-    surface: "180 m²",
-    img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
-    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
-    desc: { 
-      fr: "Hybridation des codes classiques avec une écriture épurée. Nous avons revisité la silhouette archétypale de la maison à toiture tuiles en purifiant ses lignes.", 
-      en: "Hybridizing classic codes with a clean style. We revisited the archetypal silhouette of the tiled-roof house by purifying its lines.", 
-      ar: "تهجين الرموز الكلاسيكية بأسلوب مبسط. قمنا بإعادة صياغة الصورة النمطية للمنزل ذو السقف القرميدي بتنقية خطوطه." 
-    }
-  },
-  {
-    id: "05",
     title: "VILLA DESIGN",
     concept: { fr: "L'Éloge de l'Horizon", en: "In Praise of the Horizon", ar: "مدح الأفق" },
     year: "2023",
     location: "Cannes, FR",
     surface: "420 m²",
-    img: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
+    img: "/images/projets/villa-design.jpg",
+    gallery: ["/images/projets/villa-design.jpg"],
     category: { fr: "LUXE", en: "Luxury", ar: "فاخر" },
     desc: { 
       fr: "Une architecture de la transparence conçue pour abolir les frontières. Les baies vitrées toute hauteur transforment le salon en une vaste loggia ouverte sur la nature.", 
@@ -124,35 +105,58 @@ const PROJECTS: ProjectData[] = [
     }
   },
   {
-    id: "06",
-    title: "EXTENSION BOIS",
-    concept: { fr: "Pavillon de Lumière & Transparence", en: "Pavilion of Light & Transparency", ar: "جناح النور والشفافية" },
+    id: "05",
+    title: "MAISON NÉO-TRADITIONNELLE",
+    concept: { fr: "Comment habiter la tradition aujourd'hui ?", en: "Inhabiting tradition today", ar: "كيف نسكن التقاليد اليوم؟" },
     year: "2024",
-    location: "Annecy, FR",
-    surface: "85 m²",
-    img: "https://images.unsplash.com/photo-1517581177697-002c81300852?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
-    category: { fr: "EXTENSION", en: "Extension", ar: "توسعة" },
+    location: "Aix-en-Provence, FR",
+    surface: "180 m²",
+    img: "/images/projets/maison-neo.jpg",
+    gallery: [
+      "/images/projets/maison-neo.jpg",
+      "/images/projets/maison-neo-side.jpg"
+    ],
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { 
-      fr: "Pensée comme un pavillon habité, cette villa explore la légèreté. L'alliance du bois et du verre minimise l'empreinte visuelle pour laisser entrer le jardin.", 
-      en: "Conceived as an inhabited pavilion exploring lightness. The alliance of wood and glass minimizes the visual footprint to let the garden in.", 
-      ar: "صممت كجناح مسكون يستكشف الخفة. تحالف الخشب والزجاج يقلل من البصمة البصرية ليسمح للحديقة بالدخول." 
+      fr: "Hybridation des codes classiques avec une écriture épurée. Nous avons revisité la silhouette archétypale de la maison à toiture tuiles en purifiant ses lignes.", 
+      en: "Hybridizing classic codes with a clean style. We revisited the archetypal silhouette of the tiled-roof house by purifying its lines.", 
+      ar: "تهجين الرموز الكلاسيكية بأسلوب مبسط. قمنا بإعادة صياغة الصورة النمطية للمنزل ذو السقف القرميدي بتنقية خطوطه." 
     }
   },
   {
-    id: "07",
+    id: "06",
     title: "VILLA FORESTIÈRE",
     concept: { fr: "Immersion Sylvestre & Mimétisme Matériel", en: "Forest Immersion & Material Mimicry", ar: "انغماس في الغابة ومحاكاة مادية" },
     year: "2023",
     location: "Vosges, FR",
     surface: "210 m²",
-    img: "https://images.unsplash.com/photo-1449844908441-8829872d2607?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY, 
+    img: "/images/projets/villa-forestiere.jpg",
+    gallery: [
+      "/images/projets/villa-forestiere.jpg",
+      "/images/projets/villa-forestiere-at-night-2.jpg",
+      "/images/projets/isometric-process-of-villa-forestiere.jpg"
+    ], 
     category: { fr: "VILLA PRIVÉE", en: "Private Villa", ar: "فيلا خاصة" },
     desc: { 
       fr: "Conçue comme un trait d'union entre l'homme et la forêt. Le bardage en bois patiné et les larges baies vitrées ancrent le bâti dans une temporalité lente.", 
       en: "Designed as a hyphen between man and forest. Weathered wood cladding and large windows anchor the building in a slow temporality.", 
       ar: "صممت كهمزة وصل بين الإنسان والغابة. تكسية الخشب المعتق والنوافذ الكبيرة ترسي المبنى في زمنية بطيئة." 
+    }
+  },
+  {
+    id: "07",
+    title: "EXTENSION BOIS",
+    concept: { fr: "Pavillon de Lumière & Transparence", en: "Pavilion of Light & Transparency", ar: "جناح النور والشفافية" },
+    year: "2024",
+    location: "Annecy, FR",
+    surface: "85 m²",
+    img: "/images/projets/extension-bois.jpg",
+    gallery: ["/images/projets/extension-bois.jpg"],
+    category: { fr: "EXTENSION", en: "Extension", ar: "توسعة" },
+    desc: { 
+      fr: "Pensée comme un pavillon habité, cette villa explore la légèreté. L'alliance du bois et du verre minimise l'empreinte visuelle pour laisser entrer le jardin.", 
+      en: "Conceived as an inhabited pavilion exploring lightness. The alliance of wood and glass minimizes the visual footprint to let the garden in.", 
+      ar: "صممت كجناح مسكون يستكشف الخفة. تحالف الخشب والزجاج يقلل من البصمة البصرية ليسمح للحديقة بالدخول." 
     }
   }
 ];
@@ -161,69 +165,63 @@ const PROJECTS: ProjectData[] = [
 const INTERIOR_PROJECTS: ProjectData[] = [
   {
     id: "INT-01",
-    title: "APPARTEMENT HAUSSMANN",
-    year: "2024",
-    location: "Paris 16e",
-    surface: "145 m²",
-    img: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
-    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
-    desc: { fr: "Rénovation complète style minimaliste. Restauration des moulures et intégration de mobilier contemporain sur mesure.", en: "Complete minimalist renovation. Restoration of moldings and integration of bespoke contemporary furniture.", ar: "تجديد كامل بأسلوب بسيط." }
-  },
-  {
-    id: "INT-02",
-    title: "BOUTIQUE MONOCHROME",
-    year: "2023",
-    location: "Milan, IT",
-    surface: "80 m²",
-    img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
-    category: { fr: "RETAIL", en: "Retail", ar: "بيع بالتجزئة" },
-    desc: { fr: "Concept store radical explorant les nuances de blanc et de texture. Un écrin pur pour des objets d'exception.", en: "Radical concept store exploring shades of white and texture. A pure setting for exceptional objects.", ar: "متجر بمفهوم أحادي اللون." }
-  },
-  {
-    id: "INT-03",
-    title: "RÉSIDENCE CÔTIÈRE",
-    year: "2024",
-    location: "Bandol, FR",
-    surface: "200 m²",
-    img: "https://images.unsplash.com/photo-1617806118233-18e1de247200?q=80&w=2700&auto=format&fit=crop",
-    gallery: MOCK_GALLERY,
-    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
-    desc: { fr: "Espace de convivialité épuré où la lumière naturelle sculpte les volumes intérieurs.", en: "Refined conviviality space where natural light sculpts interior volumes.", ar: "مساحة ضيافة راقية." }
-  },
-  {
-    id: "INT-04",
-    title: "SUITE HÔTELIÈRE",
-    year: "2023",
-    location: "Marrakech, MA",
-    surface: "65 m²",
-    img: "https://images.unsplash.com/photo-1616594039964-40891a909d20?q=80&w=2700&auto=format&fit=crop", 
-    gallery: MOCK_GALLERY,
-    category: { fr: "HOSPITALITY", en: "Hospitality", ar: "ضيافة" },
-    desc: { fr: "Atmosphère apaisante, tadelakt et textures douces pour une expérience sensorielle unique.", en: "Soothing atmosphere, tadelakt and soft textures for a unique sensory experience.", ar: "جو مريح وملمس ناعم." }
-  },
-  {
-    id: "INT-05",
-    title: "LOFT URBAIN",
-    year: "2023",
-    location: "Berlin, DE",
-    surface: "120 m²",
-    img: "https://images.unsplash.com/photo-1620626012053-1541e455005c?q=80&w=2700&auto=format&fit=crop", 
-    gallery: MOCK_GALLERY,
-    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
-    desc: { fr: "Matérialité brute (béton, acier) contrastée par des textiles chauds et une élégance intemporelle.", en: "Raw materiality (concrete, steel) contrasted by warm textiles and timeless elegance.", ar: "مواد خام وأناقة." }
-  },
-  {
-    id: "INT-06",
     title: "BUREAU EXECUTIVE",
     year: "2023",
     location: "La Défense, FR",
     surface: "350 m²",
-    img: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2700&auto=format&fit=crop", 
-    gallery: MOCK_GALLERY,
+    img: "/images/interieurs/int-bureau.jpg",
     category: { fr: "BUREAU", en: "Office", ar: "مكتب" },
     desc: { fr: "Espace de travail minimaliste favorisant la concentration et la sérénité. Lignes pures et acoustique maîtrisée.", en: "Minimalist workspace promoting concentration and serenity. Pure lines and controlled acoustics.", ar: "مكتب منزلي بسيط." }
+  },
+  {
+    id: "INT-02",
+    title: "SALON MINIMALISTE",
+    year: "2024",
+    location: "Paris 16e",
+    surface: "60 m²",
+    img: "/images/interieurs/int-salon.jpg",
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { fr: "Jeu de lumière et mobilier sculptural.", en: "Light play and sculptural furniture.", ar: "تلاعب بالضوء وأثاث نحتي." }
+  },
+  {
+    id: "INT-03",
+    title: "CUISINE",
+    year: "2023",
+    location: "Lyon, FR",
+    surface: "35 m²",
+    img: "/images/interieurs/int-cuisine.jpg",
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { fr: "Fonctionnalité et design intemporel.", en: "Functionality and timeless design.", ar: "وظيفية وتصميم خالد." }
+  },
+  {
+    id: "INT-04",
+    title: "SALLE DE BAIN",
+    year: "2023",
+    location: "Bordeaux, FR",
+    surface: "18 m²",
+    img: "/images/interieurs/int-sdb.jpg", 
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { fr: "Matérialité brute et élégance.", en: "Raw materiality and elegance.", ar: "مواد خام وأناقة." }
+  },
+  {
+    id: "INT-05",
+    title: "SALLE À MANGER",
+    year: "2024",
+    location: "Aix, FR",
+    surface: "45 m²",
+    img: "/images/interieurs/int-dining.jpg",
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { fr: "Espace de convivialité épuré.", en: "Refined conviviality space.", ar: "مساحة ضيافة راقية." }
+  },
+  {
+    id: "INT-06",
+    title: "CHAMBRE",
+    year: "2023",
+    location: "Marseille, FR",
+    surface: "25 m²",
+    img: "/images/interieurs/int-chambre.jpg", 
+    category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
+    desc: { fr: "Atmosphère apaisante et textures douces.", en: "Soothing atmosphere and soft textures.", ar: "جو مريح وملمس ناعم." }
   }
 ];
 
@@ -521,7 +519,7 @@ const Hero = () => {
     <section className="relative min-h-screen flex flex-col justify-end px-6 md:px-12 border-b border-neutral-900 overflow-hidden pb-16 pt-32">
       <div className="absolute inset-0 z-0">
          <img 
-          src="https://images.unsplash.com/photo-1449844908441-8829872d2607?q=80&w=2700&auto=format&fit=crop"
+          src="/images/projets/villa-forestiere.jpg"
           alt="Architecture Background"
           className="w-full h-full object-cover opacity-60 grayscale animate-pulse-slow" 
         />
@@ -593,12 +591,18 @@ const Portfolio = () => {
             <article key={data.id} className={`group ${i % 2 === 1 ? 'md:mt-32' : ''}`}>
               <Reveal delay={i * 100}>
                 {/* Clickable Image Triggering Detail View */}
-                <div onClick={() => handleOpenProject(data)} className="cursor-pointer overflow-hidden mb-6 rounded-sm aspect-[4/3] bg-neutral-900 group-hover:shadow-lg transition-all duration-500">
+                <div onClick={() => handleOpenProject(data)} className="cursor-pointer overflow-hidden mb-6 rounded-sm aspect-[4/3] bg-neutral-900 group-hover:shadow-lg transition-all duration-500 relative">
                     <img 
                       src={data.img} 
                       alt={data.title} 
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
+                    {data.gallery && data.gallery.length > 1 && (
+                      <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-sm px-3 py-1.5 flex items-center gap-2 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <Layers size={12} className="text-white" />
+                        <span className="text-[10px] font-mono text-white">{data.gallery.length}</span>
+                      </div>
+                    )}
                 </div>
 
                 <div className="border-t border-neutral-800 pt-6 mb-8 flex justify-between items-start">
@@ -645,6 +649,11 @@ const ProjectDetail = () => {
 
   if (!currentProject) return null;
 
+  // Use the defined gallery or fallback to main image
+  const displayGallery = currentProject.gallery && currentProject.gallery.length > 0 
+    ? currentProject.gallery 
+    : [currentProject.img];
+
   return (
     <div className="animate-in fade-in duration-700 bg-black min-h-screen">
       {/* Immersive Hero */}
@@ -678,15 +687,15 @@ const ProjectDetail = () => {
               </Reveal>
               <Reveal delay={200}>
                 <h3 className="font-mono text-xs uppercase text-neutral-500 border-b border-neutral-800 pb-2 mb-4">Description</h3>
-                <p className="font-sans text-neutral-400 leading-relaxed text-justify">{currentProject.desc[lang]} Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p className="font-sans text-neutral-400 leading-relaxed text-justify">{currentProject.desc[lang]}</p>
               </Reveal>
            </div>
            
            <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-              {currentProject.gallery && currentProject.gallery.map((src, i) => (
+              {displayGallery.map((src, i) => (
                 <React.Fragment key={i}>
-                  <Reveal delay={i * 100} className={i === 0 ? "md:col-span-2" : ""}>
-                     <img src={src} alt="Detail" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+                  <Reveal delay={i * 100} className={i === 0 ? "md:col-span-2 aspect-video" : "aspect-square"}>
+                     <img src={src} alt={`${currentProject.title} view ${i+1}`} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
                   </Reveal>
                 </React.Fragment>
               ))}
@@ -719,7 +728,7 @@ const InteriorView = () => {
       <section className="relative min-h-[80vh] flex flex-col justify-end px-6 md:px-12 border-b border-neutral-900 overflow-hidden pb-16 pt-32">
          <div className="absolute inset-0 z-0">
              <img 
-              src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2700&auto=format&fit=crop"
+              src="/images/interieurs/int-salon.jpg"
               alt="Interior Hero"
               className="w-full h-full object-cover opacity-50 grayscale" 
             />
@@ -884,7 +893,7 @@ const Agency = () => {
            <div className="hidden lg:block w-px h-[800px] bg-neutral-800 self-end"></div>
            <div className="relative flex-1 lg:max-w-lg w-full">
              <Reveal delay={600}>
-               <ParallaxImage src="https://images.unsplash.com/photo-1618077360395-f3068be8e001?q=80&w=2580&auto=format&fit=crop" alt="Akram Halisse" height="h-[700px]" className="z-10" />
+               <ParallaxImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2700&auto=format&fit=crop" alt="Akram Halisse" height="h-[700px]" className="z-10" />
                <div className="absolute bottom-0 left-0 rtl:left-auto rtl:right-0 bg-black p-6 border-t border-r rtl:border-r-0 rtl:border-l border-neutral-800 z-20">
                  <p className="font-mono text-sm text-white mb-1">AKRAM HALISSE</p>
                  <p className="font-mono text-[10px] text-neutral-500 uppercase">{t.role}</p>
