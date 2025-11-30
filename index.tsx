@@ -18,8 +18,8 @@ interface ProjectData {
   title: string;
   concept?: LocalizedString;
   year: string;
-  img: string; // L'image principale
-  gallery?: string[]; // Pour la vue détail (nouvelle structure)
+  img: string;
+  gallery?: string[];
   category: LocalizedString;
   desc: LocalizedString;
   location?: string;
@@ -31,8 +31,9 @@ interface ServiceData {
   desc: string;
 }
 
-// --- 2. DATA CONSTANTS (VOS VRAIES DONNÉES INTÉGRÉES DANS LA NOUVELLE STRUCTURE) ---
+// --- 2. DATA CONSTANTS ---
 
+// PROJETS ARCHITECTURE
 const PROJECTS: ProjectData[] = [
   {
     id: "01",
@@ -42,7 +43,6 @@ const PROJECTS: ProjectData[] = [
     location: "Marseille, FR",
     surface: "2400 m²",
     img: "/Logement Collectif.jpg",
-    // On utilise la même image pour la galerie car vous n'en avez qu'une par projet pour l'instant
     gallery: ["/Logement Collectif.jpg", "/Logement Collectif.jpg"], 
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { 
@@ -59,7 +59,7 @@ const PROJECTS: ProjectData[] = [
     location: "Lyon, FR",
     surface: "1200 m²",
     img: "/Mosquée.jpg",
-    gallery: ["/Mosquée.jpg", "/Mosquée1.jpg", "/Mosquée2.jpg"], // J'ai vu que vous aviez uploadé Mosquée1 et 2 aussi !
+    gallery: ["/Mosquée.jpg", "/Mosquée1.jpg", "/Mosquée2.jpg"], 
     category: { fr: "ÉQUIPEMENT PUBLIC", en: "Public Facility", ar: "مرفق عام" },
     desc: { 
       fr: "Une réinterprétation contemporaine de l'architecture sacrée. Conçu comme un monolithe de lumière, l'édifice s'ancre dans la ville avec une puissance silencieuse.", 
@@ -106,7 +106,7 @@ const PROJECTS: ProjectData[] = [
     year: "2023",
     location: "Cannes, FR",
     surface: "420 m²",
-    img: "/Villa design .jpg", // Attention à l'espace conservé
+    img: "/Villa design .jpg", 
     gallery: ["/Villa design .jpg"],
     category: { fr: "LUXE", en: "Luxury", ar: "فاخر" },
     desc: { 
@@ -122,7 +122,7 @@ const PROJECTS: ProjectData[] = [
     year: "2024",
     location: "Annecy, FR",
     surface: "85 m²",
-    img: "/Villa  Extension Bois.jpg", // Attention aux deux espaces conservés
+    img: "/Villa  Extension Bois.jpg", 
     gallery: ["/Villa  Extension Bois.jpg"],
     category: { fr: "EXTENSION", en: "Extension", ar: "توسعة" },
     desc: { 
@@ -149,7 +149,7 @@ const PROJECTS: ProjectData[] = [
   }
 ];
 
-// --- PROJETS INTÉRIEURS (VOS IMAGES) ---
+// --- PROJETS INTÉRIEURS ---
 const INTERIOR_PROJECTS: ProjectData[] = [
   {
     id: "INT-01",
@@ -179,7 +179,7 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     id: "INT-04",
     title: "CHAMBRE",
     year: "2023",
-    img: "/chambre.jpg",
+    img: "/chambre.jpg", 
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Atmosphère apaisante et textures douces.", en: "Soothing atmosphere and soft textures.", ar: "جو مريح وملمس ناعم." }
   },
@@ -187,7 +187,7 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     id: "INT-05",
     title: "SALLE DE BAIN",
     year: "2023",
-    img: "/sdb.jpg",
+    img: "/sdb.jpg", 
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Matérialité brute et élégance.", en: "Raw materiality and elegance.", ar: "مواد خام وأناقة." }
   },
@@ -195,7 +195,7 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     id: "INT-06",
     title: "ESPACE DE TRAVAIL",
     year: "2023",
-    img: "/Bureau.jpg", // Avec majuscule B
+    img: "/Bureau.jpg", 
     category: { fr: "BUREAU", en: "Office", ar: "مكتب" },
     desc: { fr: "Bureau à domicile minimaliste.", en: "Minimalist home office.", ar: "مكتب منزلي بسيط." }
   }
@@ -210,7 +210,7 @@ const TRANSLATIONS = {
       desc: "Vision Stratégique | Conception Avancée | Exécution. A1 Studio opère à la croisée de l'exigence technique et de l'émotion spatiale.", 
       status_label: "APPROCHE", status_val: "RATIONALITÉ SENSIBLE", focus_label: "EXPERTISE", focus_val: "RÉSIDENTIEL / PUBLIC / URBAIN", cta: "Démarrer un projet" 
     },
-    portfolio: { label: "Sélection de Projets", view_project: "VOIR LE PROJET", view_all: "Voir tout le portfolio", view_interior: "Portfolio Design Intérieur" },
+    portfolio: { label: "Sélection de Projets", view_project: "DÉCOUVRIR LE PROJET", view_all: "Voir tout le portfolio", view_interior: "Portfolio Design Intérieur" },
     interior: { label: "Design Intérieur", desc: "Une exploration de la matière, de la lumière et du détail à l'échelle intime." },
     expertise: { 
       label: "Notre Processus", 
@@ -486,7 +486,6 @@ const Navbar = () => {
   );
 };
 
-// ... Hero component ...
 const Hero = () => {
   const { lang } = useContext(LanguageContext);
   const t = TRANSLATIONS[lang].hero;
@@ -562,38 +561,59 @@ const Portfolio = () => {
     <section id="portfolio" className="relative z-10 px-6 md:px-12 py-32 border-b border-neutral-900 bg-black" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto">
         <SectionLabel number="01" title={t.label} />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-32">
+        <div className="max-w-[1920px] mx-auto px-6 md:px-12">
           {PROJECTS.map((data, i) => (
-            <article key={data.id} className={`group ${i % 2 === 1 ? 'md:mt-32' : ''}`}>
-              <Reveal delay={i * 100}>
-                {/* Clickable Image Triggering Detail View */}
-                <div onClick={() => handleOpenProject(data)} className="cursor-pointer overflow-hidden mb-6 rounded-sm aspect-[4/3] bg-neutral-900 group-hover:shadow-lg transition-all duration-500">
-                    <img 
-                      src={data.img} 
-                      alt={data.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                </div>
-
-                <div className="border-t border-neutral-800 pt-6 mb-8 flex justify-between items-start">
-                  <div className="flex gap-4">
-                    <span className="font-mono text-xs text-neutral-500">{data.id}</span>
-                    <div>
-                      <h3 onClick={() => handleOpenProject(data)} className="cursor-pointer font-sans text-2xl font-bold uppercase mb-2 group-hover:text-neutral-400 transition-colors">{data.title}</h3>
-                      {data.concept && <p className="font-sans text-sm text-white mb-2 italic opacity-80">{data.concept[lang]}</p>}
-                      <p className="font-mono text-xs text-neutral-500 uppercase">{data.category[lang]} — <time>{data.year}</time></p>
+             <article key={data.id} className="group relative">
+               <Reveal delay={i * 100}>
+                 <div className={`flex flex-col ${i % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 lg:gap-32 items-center py-24 border-t border-neutral-900`}>
+                    
+                    {/* Image Section (60%) */}
+                    <div onClick={() => handleOpenProject(data)} className="lg:w-[60%] w-full cursor-pointer overflow-hidden relative">
+                       <div className="relative overflow-hidden aspect-[16/9]">
+                          <img 
+                            src={data.img} 
+                            alt={data.title} 
+                            className="w-full h-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-105 grayscale group-hover:grayscale-0"
+                          />
+                          <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                       </div>
                     </div>
-                  </div>
-                  <Plus size={16} className="text-neutral-600 group-hover:rotate-90 transition-transform duration-300" />
-                </div>
-                
-                <div className="flex justify-between items-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-4 group-hover:translate-y-0 ease-out">
-                   <p className="font-sans text-sm text-neutral-400 max-w-xs">{data.desc[lang]}</p>
-                   {/* Corrected Click Handler */}
-                   <span onClick={() => handleOpenProject(data)} className="font-mono text-xs underline cursor-pointer uppercase text-white hover:text-neutral-400">{t.view_project}</span>
-                </div>
-              </Reveal>
-            </article>
+
+                    {/* Text Section (40%) */}
+                    <div className="lg:w-[40%] w-full flex flex-col justify-center">
+                       <div className="flex items-center gap-4 mb-8">
+                          <span className="font-mono text-xs text-neutral-500">0{i+1}</span>
+                          <span className="h-px w-12 bg-neutral-800"></span>
+                          <span className="font-mono text-xs text-white uppercase tracking-widest">{data.category[lang]}</span>
+                       </div>
+                       
+                       <h2 onClick={() => handleOpenProject(data)} className="font-sans text-4xl md:text-6xl font-bold uppercase mb-8 cursor-pointer text-neutral-300 group-hover:text-white transition-colors leading-tight">
+                         {data.title}
+                       </h2>
+                       
+                       {/* Mini Specs Grid */}
+                       <div className="grid grid-cols-2 gap-y-4 gap-x-8 mb-8 border-l border-neutral-900 pl-6">
+                          <div>
+                            <span className="block font-mono text-[10px] text-neutral-600 uppercase mb-1">Year</span>
+                            <span className="font-sans text-sm text-white">{data.year}</span>
+                          </div>
+                          <div>
+                            <span className="block font-mono text-[10px] text-neutral-600 uppercase mb-1">Location</span>
+                            <span className="font-sans text-sm text-white">{data.location || "France"}</span>
+                          </div>
+                          <div className="col-span-2">
+                             <p className="font-sans text-neutral-500 leading-relaxed line-clamp-2">{data.desc[lang]}</p>
+                          </div>
+                       </div>
+
+                       <button onClick={() => handleOpenProject(data)} className="self-start inline-flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-white hover:text-neutral-400 transition-colors group/btn">
+                         {t.portfolio.view_project} 
+                         <ArrowRight size={14} className="group-hover/btn:translate-x-2 transition-transform duration-300" />
+                       </button>
+                    </div>
+                 </div>
+               </Reveal>
+             </article>
           ))}
         </div>
         <div className="mt-40 flex justify-center gap-8 flex-col md:flex-row items-center">
