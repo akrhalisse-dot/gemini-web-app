@@ -31,7 +31,7 @@ interface ServiceData {
   desc: string;
 }
 
-// --- 2. DATA CONSTANTS (MISES À JOUR AVEC TES IMAGES) ---
+// --- 2. DATA CONSTANTS (MISES À JOUR AVEC VOS NOMS DE FICHIERS EXACTS) ---
 
 // PROJETS ARCHITECTURE (EXTÉRIEUR)
 const PROJECTS: ProjectData[] = [
@@ -61,7 +61,7 @@ const PROJECTS: ProjectData[] = [
     img: "/images/projets/mosquee-main-image.jpg",
     gallery: [
       "/images/projets/mosquee-main-image.jpg",
-      "/images/projets/Mosquee-details.jpg",
+      "/images/projets/Mosquee-details.jpg",    // Nom exact avec Majuscule
       "/images/projets/mosquee-side.jpg"
     ],
     category: { fr: "ÉQUIPEMENT PUBLIC", en: "Public Facility", ar: "مرفق عام" },
@@ -160,7 +160,7 @@ const PROJECTS: ProjectData[] = [
   }
 ];
 
-// --- PROJETS INTÉRIEURS ---
+// --- PROJETS INTÉRIEURS (INTERIOR SPACES) ---
 const INTERIOR_PROJECTS: ProjectData[] = [
   {
     id: "INT-01",
@@ -169,8 +169,9 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     location: "La Défense, FR",
     surface: "350 m²",
     img: "/images/interieurs/int-bureau.jpg",
+    gallery: ["/images/interieurs/int-bureau.jpg"],
     category: { fr: "BUREAU", en: "Office", ar: "مكتب" },
-    desc: { fr: "Espace de travail minimaliste favorisant la concentration et la sérénité. Lignes pures et acoustique maîtrisée.", en: "Minimalist workspace promoting concentration and serenity. Pure lines and controlled acoustics.", ar: "مكتب منزلي بسيط." }
+    desc: { fr: "Espace de travail minimaliste favorisant la concentration et la sérénité.", en: "Minimalist workspace promoting concentration.", ar: "مكتب منزلي بسيط." }
   },
   {
     id: "INT-02",
@@ -179,6 +180,7 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     location: "Paris 16e",
     surface: "60 m²",
     img: "/images/interieurs/int-salon.jpg",
+    gallery: ["/images/interieurs/int-salon.jpg"],
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Jeu de lumière et mobilier sculptural.", en: "Light play and sculptural furniture.", ar: "تلاعب بالضوء وأثاث نحتي." }
   },
@@ -189,6 +191,7 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     location: "Lyon, FR",
     surface: "35 m²",
     img: "/images/interieurs/int-cuisine.jpg",
+    gallery: ["/images/interieurs/int-cuisine.jpg"],
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Fonctionnalité et design intemporel.", en: "Functionality and timeless design.", ar: "وظيفية وتصميم خالد." }
   },
@@ -198,7 +201,8 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     year: "2023",
     location: "Bordeaux, FR",
     surface: "18 m²",
-    img: "/images/interieurs/int-sdb.jpg", 
+    img: "/images/interieurs/int-sdb.jpg",
+    gallery: ["/images/interieurs/int-sdb.jpg"], 
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Matérialité brute et élégance.", en: "Raw materiality and elegance.", ar: "مواد خام وأناقة." }
   },
@@ -209,6 +213,7 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     location: "Aix, FR",
     surface: "45 m²",
     img: "/images/interieurs/int-dining.jpg",
+    gallery: ["/images/interieurs/int-dining.jpg"],
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Espace de convivialité épuré.", en: "Refined conviviality space.", ar: "مساحة ضيافة راقية." }
   },
@@ -218,7 +223,8 @@ const INTERIOR_PROJECTS: ProjectData[] = [
     year: "2023",
     location: "Marseille, FR",
     surface: "25 m²",
-    img: "/images/interieurs/int-chambre.jpg", 
+    img: "/images/interieurs/int-chambre.jpg",
+    gallery: ["/images/interieurs/int-chambre.jpg"], 
     category: { fr: "RÉSIDENTIEL", en: "Residential", ar: "سكني" },
     desc: { fr: "Atmosphère apaisante et textures douces.", en: "Soothing atmosphere and soft textures.", ar: "جو مريح وملمس ناعم." }
   }
